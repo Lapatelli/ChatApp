@@ -1,0 +1,45 @@
+﻿using ChatApp.Core.Entities;
+using ChatApp.CQRS.Queries.Chats;
+using ChatApp.CQRS.Queries.Users;
+using ChatApp.Interfaces;
+using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace ChatApp.CQRS.Handlers.Chats.Queries
+{
+    public class GetChatByNameHandler : IRequestHandler<GetChatByNameQuery, (Chat, User, IEnumerable<User>)>
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMediator _mediator;
+
+
+        public GetChatByNameHandler (IUnitOfWork unitOfWork, IMediator mediator)
+        {
+            _unitOfWork = unitOfWork;
+            _mediator = mediator;
+        }
+        public async Task<(Chat, User, IEnumerable<User>)> Handle(GetChatByNameQuery query, CancellationToken cancellationToken)
+        {
+
+            var chat = await _unitOfWork.ChatRepository.SearchChatByName(query.Name);
+
+            var userCreator = await _mediator.Send(new GetUserByIdQuery(chat.CreatedByUser.ToString()));
+
+            List<User> usersChat = new List<User>();
+            foreach (var chatUsers in chat.ChatUsers)
+            {
+                usersChat.Add(await _mediator.Send(new GetUserByIdQuery(chatUsers.ToString())));
+            }
+
+            if (chat == null)
+            {
+                throw new Exception($"User with chat {query.Name} does not exist");
+            }
+
+            return (chat, userCreator, usersChat);
+        }
+    }
+}

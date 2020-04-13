@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ChatApp.API.ViewModels.Chat;
-using ChatApp.API.ViewModels.User;
 using ChatApp.Core.Entities;
+using ChatApp.CQRS.Commands.Chats;
 using System;
 using System.Collections.Generic;
 
@@ -17,6 +17,26 @@ namespace ChatApp.API.Mapper
                     Name = src.Name,
                     Password = src.Password,
                     CreatedAt = DateTime.Now,
+                    ChatPrivacy = src.ChatPrivacy
+                });
+
+            CreateMap<(CreateChatViewModel model, string creator), CreateChatCommand>()
+                .ConvertUsing(src => new CreateChatCommand
+                {
+                    Name = src.model.Name,
+                    Password = src.model.Password,
+                    CreatedAt = DateTime.Now,
+                    CreatedByUser = src.creator,
+                    ChatPrivacy = src.model.ChatPrivacy,
+                    ChatUsers = src.model.ChatUsers
+                });
+
+            CreateMap<CreateChatCommand, Chat>()
+                .ConvertUsing(src => new Chat
+                {
+                    Name = src.Name,
+                    Password = src.Password,
+                    CreatedAt = src.CreatedAt,
                     ChatPrivacy = src.ChatPrivacy
                 });
 
@@ -36,17 +56,6 @@ namespace ChatApp.API.Mapper
                     Password = src.chat.Password,
                     CreatedBy = src.user,
                     ChatUsers = src.chatUsers
-                });
-
-            CreateMap<User, GetUserViewModel>()
-                .ConvertUsing(src => new GetUserViewModel
-                {
-                    Id = src.Id.ToString(),
-                    FirstName = src.FirstName,
-                    LastName = src.LastName,
-                    EmailAddress = src.EmailAddress,
-                    TelephoneNumber = src.TelephoneNumber,
-                    UserStatus = src.UserStatus
                 });
         }
     }

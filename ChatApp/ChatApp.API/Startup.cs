@@ -4,6 +4,7 @@ using ChatApp.Interfaces.Repositories;
 using ChatApp.Persistence;
 using ChatApp.Persistence.Context;
 using ChatApp.Persistence.Repositories;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
+using System;
 
 namespace ChatApp.API
 {
@@ -35,6 +37,8 @@ namespace ChatApp.API
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddControllers();
+
+            services.AddMediatR(AppDomain.CurrentDomain.Load("ChatApp.CQRS"));
 
             services.AddAutoMapper(typeof(Startup));
 

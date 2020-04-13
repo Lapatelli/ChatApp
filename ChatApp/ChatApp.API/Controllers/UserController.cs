@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using ChatApp.API.ViewModels.User;
 using ChatApp.Core.Entities;
-using ChatApp.Interfaces;
-using ChatApp.Interfaces.Repositories;
+using ChatApp.CQRS.Queries.Users;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatApp.API.Controllers
@@ -14,20 +14,20 @@ namespace ChatApp.API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public UserController(IUnitOfWork unitOfWork, IMapper mapper)
+        public UserController(IMapper mapper, IMediator mediator)
         {
-            _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
 
         [HttpGet, Route("")]
         public async Task<IActionResult> GetAllUsersAsync()
         {
-            var users = await _unitOfWork.UserRepository.GetAllUsers();
+            var users = await _mediator.Send(new GetAllUsersQuery());
             var result = _mapper.Map<IEnumerable<User>, IEnumerable<GetUserViewModel>>(users);
 
             return Ok(result);
@@ -36,8 +36,8 @@ namespace ChatApp.API.Controllers
         [HttpGet, Route("name/{userName}")]
         public async Task<IActionResult> GetUserByNameAsync(string userName)
         {
-            var userSelected = await _unitOfWork.UserRepository.SearchUserByName(userName);
-            var result = _mapper.Map<IEnumerable<User>, IEnumerable<GetUserViewModel>>(userSelected);
+            var user = await _mediator.Send(new GetUserByNameQuery(userName));
+            var result = _mapper.Map<IEnumerable<User>, IEnumerable<GetUserViewModel>>(user);
 
 
             return Ok(result);
@@ -46,8 +46,8 @@ namespace ChatApp.API.Controllers
         [HttpGet, Route("id/{userId}")]
         public async Task<IActionResult> GetUserByIdAsync(string userId)
         {
-            var userSelected = await _unitOfWork.UserRepository.SearchUserById(userId);
-            var result = _mapper.Map<User, GetUserViewModel>(userSelected);
+            var user = await _mediator.Send(new GetUserByIdQuery(userId));
+            var result = _mapper.Map<User, GetUserViewModel>(user);
 
             return Ok(result);
         }
