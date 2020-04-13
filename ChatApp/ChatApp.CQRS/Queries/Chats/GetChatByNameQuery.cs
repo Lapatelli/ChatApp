@@ -1,14 +1,13 @@
 ﻿using ChatApp.Core.Entities;
 using MediatR;
-using System.Collections.Generic;
 
 namespace ChatApp.CQRS.Queries.Chats
 {
-    public class GetChatByNameQuery : IRequest<(Chat, User, IEnumerable<User>)>
+    public class GetChatByNameQuery : IRequest<Chat>
     {
-        public GetChatByNameQuery(string userName)
+        public GetChatByNameQuery(string chatName)
         {
-            Name = userName;
+            Name = chatName;
         }
 
         public string Name { get; set; }

@@ -1,4 +1,5 @@
-﻿using ChatApp.Core.Entities;
+﻿using ChatApp.Core.DTO;
+using MongoDB.Bson;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -6,10 +7,12 @@ namespace ChatApp.Interfaces.Repositories
 {
     public interface IUserRepository
     {
-        Task<IEnumerable<User>> GetAllUsers();
+        Task<IEnumerable<UserDTO>> GetAllUsers();
 
-        Task<IEnumerable<User>> SearchUserByName(string name);
+        Task<IEnumerable<UserDTO>> SearchUserByName(string name);
 
-        Task<User> SearchUserById(string id);
+        Task<UserDTO> SearchUserById(ObjectId id);
+
+        Task<UserDTO> UpdateUser(UserDTO user);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace ChatApp.API.ViewModels.Chat
 {
-    public class GetChatViewModel
+    public class ChatViewModel
     {
         public string Id { get; set; }
         public string Name { get; set; }

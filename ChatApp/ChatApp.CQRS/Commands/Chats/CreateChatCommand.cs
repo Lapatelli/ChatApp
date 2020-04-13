@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace ChatApp.CQRS.Commands.Chats
 {
-    public class CreateChatCommand : IRequest<(Chat, User, IEnumerable<User>)>
+    public class CreateChatCommand : IRequest<Chat>
     {
         public ObjectId Id { get; set; }
         public string Name { get; set; }

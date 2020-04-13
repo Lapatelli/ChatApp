@@ -1,5 +1,5 @@
 ﻿using MongoDB.Driver;
-using ChatApp.Core.Entities;
+using ChatApp.Core.DTO;
 
 namespace ChatApp.Persistence.Context
 {
@@ -12,21 +12,21 @@ namespace ChatApp.Persistence.Context
             _mongoDatabase = mongoClient.GetDatabase(dbConnection);
         }
 
-        public IMongoCollection<User> Users
+        public IMongoCollection<UserDTO> Users
         {
             get
             {
                 //ensure that this Collection exists
-                return _mongoDatabase.GetCollection<User>("Users");
+                return _mongoDatabase.GetCollection<UserDTO>("Users");
             }
         }
 
-        public virtual IMongoCollection<Chat> Chats
+        public virtual IMongoCollection<ChatDTO> Chats
         {
             get
             {
                 //ensure that this Collection exists
-                return _mongoDatabase.GetCollection<Chat>("Chats");
+                return _mongoDatabase.GetCollection<ChatDTO>("Chats");
             }
         }
 

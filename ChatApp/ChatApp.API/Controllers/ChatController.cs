@@ -27,7 +27,7 @@ namespace ChatApp.API.Controllers
         public async Task<IActionResult> GetChatByNameAsync(string chatName)
         {
             var chat = await _mediator.Send(new GetChatByNameQuery(chatName));
-            var result = _mapper.Map<(Chat, User, IEnumerable<User>), GetChatViewModel>((chat));
+            var result = _mapper.Map<Chat, ChatViewModel>((chat));
 
             return Ok(result);
         }
@@ -38,7 +38,7 @@ namespace ChatApp.API.Controllers
             var chatCreationCommand = _mapper.Map<(CreateChatViewModel, string), CreateChatCommand>((createChatViewModel, userId));
             var chat = await _mediator.Send(chatCreationCommand);
 
-            var result = _mapper.Map<(Chat, User, IEnumerable<User>), GetChatViewModel>((chat));
+            var result = _mapper.Map<Chat, ChatViewModel>(chat);
 
             return Ok(result);
         }
