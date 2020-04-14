@@ -22,7 +22,7 @@ namespace ChatApp.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet, Route("seatch/{chatName}")]
+        [HttpGet("seatch/{chatName}")]
         public async Task<IActionResult> GetChatByNameAsync(string chatName)
         {
             var chat = await _mediator.Send(new GetChatByNameQuery(chatName));
@@ -31,7 +31,7 @@ namespace ChatApp.API.Controllers
             return Ok(result);
         }
         
-        [HttpPost, Route("create")]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateChatAsync([FromBody] CreateChatViewModel createChatViewModel,[FromQuery] string userId)
         {
             var chatCreationCommand = _mapper.Map<(CreateChatViewModel, string), CreateChatCommand>((createChatViewModel, userId));
@@ -42,7 +42,7 @@ namespace ChatApp.API.Controllers
             return Ok(result);
         }
 
-        [HttpPut, Route("update/{chatId}")]
+        [HttpPut("update/{chatId}")]
         public async Task<IActionResult> UpdateChatAsync([FromBody] UpdateChatViewModel model, [FromRoute] string chatId)
         {
             var updateChatCommand = _mapper.Map<(UpdateChatViewModel, string), UpdateChatCommand>((model, chatId));
@@ -53,7 +53,7 @@ namespace ChatApp.API.Controllers
             return Ok(result);
         }
 
-        [HttpPut, Route("deleteuser/{chatId}")]
+        [HttpPut("deleteuser/{chatId}")]
         public async Task<IActionResult> DeleteUserFromChatAsync([FromBody] DeleteUserFromChatViewModel model, [FromRoute] string chatId)
         {
             var deleteUserFromChatCommand = _mapper.Map<(DeleteUserFromChatViewModel, string), DeleteUserFromChatCommand>((model, chatId));
@@ -64,7 +64,7 @@ namespace ChatApp.API.Controllers
             return Ok(result);
         }
 
-        [HttpPut, Route("adduser/{chatId}")]
+        [HttpPut("adduser/{chatId}")]
         public async Task<IActionResult> AddUserToChatAsync([FromBody] AddUserToChatViewModel model, [FromRoute] string chatId)
         {
             var addUserToChatCommand = _mapper.Map<(AddUserToChatViewModel, string), AddUserToChatCommand>((model, chatId));
@@ -75,13 +75,11 @@ namespace ChatApp.API.Controllers
             return Ok(result);
         }
 
-        [HttpDelete, Route("delete/{chatId}")]
+        [HttpDelete("delete/{chatId}")]
         public async Task<IActionResult> DeleteChatAsync([FromRoute] string chatId)
         {
             await _mediator.Send(new DeleteChatCommand(chatId));
             return NoContent();
         }
-
-
     }
 }

@@ -31,7 +31,7 @@ namespace ChatApp.CQRS.Handlers.Chats.Queries
 
             var userCreator = await _mediator.Send(new GetUserByIdQuery(chat.CreatedByUser.ToString()));
 
-            List<User> usersChat = new List<User>();
+            var usersChat = new List<User>();
             foreach (var chatUsers in chat.ChatUsers)
             {
                 usersChat.Add(await _mediator.Send(new GetUserByIdQuery(chatUsers.ToString())));

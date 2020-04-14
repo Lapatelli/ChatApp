@@ -22,7 +22,6 @@ namespace ChatApp.CQRS.Handlers.Users.Queries
         }
         public async Task<IEnumerable<User>> Handle(GetUserByNameQuery query, CancellationToken cancellationToken)
         {
-
             var users = await _unitOfWork.UserRepository.SearchUserByName(query.Name);
             var result = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<User>>(users);
 

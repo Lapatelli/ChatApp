@@ -40,7 +40,6 @@ namespace ChatApp.CQRS.Handlers.Chats.Commands
             var chatCreated = await _unitOfWork.ChatRepository.CreateChatAsync(chat);
             var userCreator = await _mediator.Send(new GetUserByIdQuery(chatCreated.CreatedByUser.ToString()));
 
-
             foreach (var chatUsers in chatCreated.ChatUsers)
             {
                 usersChat.Add(await _mediator.Send(new GetUserByIdQuery(chatUsers.ToString())));
