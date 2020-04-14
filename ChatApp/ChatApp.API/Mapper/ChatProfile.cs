@@ -56,6 +56,38 @@ namespace ChatApp.API.Mapper
                     ChatPrivacy = src.command.ChatPrivacy,
                     ChatUsers = src.list
                 });
+
+            CreateMap<UpdateChatCommand, ChatDTO>()
+                .ConvertUsing(src => new ChatDTO
+                {
+                    Id = src.Id,
+                    Name = src.Name,
+                    Password = src.Password,
+                    ChatPrivacy = src.ChatPrivacy
+                });
+
+            CreateMap<(DeleteUserFromChatViewModel model, string chatId), DeleteUserFromChatCommand>()
+                .ConvertUsing(src => new DeleteUserFromChatCommand
+                {
+                    ChatId = ObjectId.Parse(src.chatId),
+                    UserId = ObjectId.Parse(src.model.UserId)
+                });
+
+            CreateMap<(AddUserToChatViewModel model, string chatId), AddUserToChatCommand>()
+                .ConvertUsing(src => new AddUserToChatCommand
+                {
+                    ChatId = ObjectId.Parse(src.chatId),
+                    UserId = ObjectId.Parse(src.model.UserId)
+                });
+
+            CreateMap<(UpdateChatViewModel model, string chatId), UpdateChatCommand>()
+                .ConvertUsing(src => new UpdateChatCommand
+                {
+                    Id = ObjectId.Parse(src.chatId),
+                    Name = src.model.Name,
+                    Password = src.model.Password,
+                    ChatPrivacy = src.model.ChatPrivacy
+                });
         }
     }
 }

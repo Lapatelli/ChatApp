@@ -46,7 +46,7 @@ namespace ChatApp.CQRS.Handlers.Chats.Commands
                 usersChat.Add(await _mediator.Send(new GetUserByIdQuery(chatUsers.ToString())));
             }
 
-            var result = _mapper.Map<(ChatDTO, User, List<User>), Chat>((chatCreated, userCreator, usersChat));
+            var result = _mapper.Map<(ChatDTO, User, IEnumerable<User>), Chat>((chatCreated, userCreator, usersChat));
 
             return result;
         }

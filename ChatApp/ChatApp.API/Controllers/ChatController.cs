@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using ChatApp.API.ViewModels.Chat;
 using ChatApp.Core.Entities;
@@ -23,7 +22,7 @@ namespace ChatApp.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet, Route("{chatName}")]
+        [HttpGet, Route("seatch/{chatName}")]
         public async Task<IActionResult> GetChatByNameAsync(string chatName)
         {
             var chat = await _mediator.Send(new GetChatByNameQuery(chatName));
@@ -32,7 +31,7 @@ namespace ChatApp.API.Controllers
             return Ok(result);
         }
         
-        [HttpPost, Route("")]
+        [HttpPost, Route("create")]
         public async Task<IActionResult> CreateChatAsync([FromBody] CreateChatViewModel createChatViewModel,[FromQuery] string userId)
         {
             var chatCreationCommand = _mapper.Map<(CreateChatViewModel, string), CreateChatCommand>((createChatViewModel, userId));
@@ -41,6 +40,46 @@ namespace ChatApp.API.Controllers
             var result = _mapper.Map<Chat, ChatViewModel>(chat);
 
             return Ok(result);
+        }
+
+        [HttpPut, Route("update/{chatId}")]
+        public async Task<IActionResult> UpdateChatAsync([FromBody] UpdateChatViewModel model, [FromRoute] string chatId)
+        {
+            var updateChatCommand = _mapper.Map<(UpdateChatViewModel, string), UpdateChatCommand>((model, chatId));
+            var chat = await _mediator.Send(updateChatCommand);
+
+            var result = _mapper.Map<Chat, ChatViewModel>(chat);
+
+            return Ok(result);
+        }
+
+        [HttpPut, Route("deleteuser/{chatId}")]
+        public async Task<IActionResult> DeleteUserFromChatAsync([FromBody] DeleteUserFromChatViewModel model, [FromRoute] string chatId)
+        {
+            var deleteUserFromChatCommand = _mapper.Map<(DeleteUserFromChatViewModel, string), DeleteUserFromChatCommand>((model, chatId));
+            var chat = await _mediator.Send(deleteUserFromChatCommand);
+
+            var result = _mapper.Map<Chat, ChatViewModel>(chat);
+
+            return Ok(result);
+        }
+
+        [HttpPut, Route("adduser/{chatId}")]
+        public async Task<IActionResult> AddUserToChatAsync([FromBody] AddUserToChatViewModel model, [FromRoute] string chatId)
+        {
+            var addUserToChatCommand = _mapper.Map<(AddUserToChatViewModel, string), AddUserToChatCommand>((model, chatId));
+            var chat = await _mediator.Send(addUserToChatCommand);
+
+            var result = _mapper.Map<Chat, ChatViewModel>(chat);
+
+            return Ok(result);
+        }
+
+        [HttpDelete, Route("delete/{chatId}")]
+        public async Task<IActionResult> DeleteChatAsync([FromRoute] string chatId)
+        {
+            await _mediator.Send(new DeleteChatCommand(chatId));
+            return NoContent();
         }
 
 
