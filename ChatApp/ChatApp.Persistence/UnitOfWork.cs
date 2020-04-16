@@ -8,7 +8,7 @@ namespace ChatApp.Persistence
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ChatDbContext _context;
-        private bool disposed;
+        private readonly bool disposed;
 
         public UnitOfWork(IUserRepository userRepository, IChatRepository chatRepository, ChatDbContext context)
         {

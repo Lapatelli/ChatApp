@@ -1,4 +1,5 @@
 ﻿using ChatApp.Core.DTO;
+using ChatApp.Core.Enums;
 using ChatApp.Interfaces.Repositories;
 using ChatApp.Persistence.Context;
 using MongoDB.Bson;
@@ -32,6 +33,18 @@ namespace ChatApp.Persistence.Repositories
             return await _db.Users.Find(us => us.Id == id).FirstOrDefaultAsync();
         }
 
+        public async Task<bool> IsUserExist(string email)
+        {
+            return await _db.Users.Find(us => us.EmailAddress == email).AnyAsync();
+        }
+
+        public async Task<UserDTO> CreateUser(UserDTO user)
+        {
+            await _db.Users.InsertOneAsync(user);
+
+            return user;
+        }
+
         public async Task<UserDTO> UpdateUser(UserDTO user)
         {
             var userDb = await SearchUserById(user.Id);
@@ -43,6 +56,17 @@ namespace ChatApp.Persistence.Repositories
             await _db.Users.ReplaceOneAsync(new BsonDocument("_id", user.Id), user);
 
             return user;
+        }
+
+        public async Task<UserDTO> UpdateUserStatus(string emailAddress, UserStatus userStatus)
+        {
+            var userDb = await _db.Users.Find(us => us.EmailAddress == emailAddress).FirstOrDefaultAsync();
+
+            userDb.UserStatus = userStatus;
+
+            await _db.Users.ReplaceOneAsync(new BsonDocument("_id", userDb.Id), userDb);
+
+            return userDb;
         }
     }
 }

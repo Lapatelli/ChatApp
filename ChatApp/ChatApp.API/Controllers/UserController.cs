@@ -6,12 +6,15 @@ using ChatApp.Core.Entities;
 using ChatApp.CQRS.Commands.Users;
 using ChatApp.CQRS.Queries.Users;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatApp.API.Controllers
 {
     [Produces("application/json")]
     [Route("users")]
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     [ApiController]
     public class UserController : ControllerBase
     {

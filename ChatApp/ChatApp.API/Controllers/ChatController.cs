@@ -5,12 +5,15 @@ using ChatApp.Core.Entities;
 using ChatApp.CQRS.Commands.Chats;
 using ChatApp.CQRS.Queries.Chats;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatApp.API.Controllers
 {
     [Route("chats")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class ChatController : ControllerBase
     {
         private readonly IMediator _mediator;

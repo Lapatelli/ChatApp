@@ -53,6 +53,16 @@ namespace ChatApp.API.Mapper
                     TelephoneNumber = src.TelephoneNumber,
                     EmailAddress = src.EmailAddress
                 });
+
+            CreateMap<RegisterUserCommand, UserDTO>()
+                .ConvertUsing(src => new UserDTO
+                {
+                    Id = src.Id,
+                    FirstName = src.FirstName,
+                    LastName = src.LastName,
+                    TelephoneNumber = src.TelephoneNumber,
+                    EmailAddress = src.EmailAddress
+                });
         }
     }
 }
