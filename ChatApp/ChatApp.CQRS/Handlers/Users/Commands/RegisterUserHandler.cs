@@ -2,6 +2,7 @@
 using ChatApp.Core.DTO;
 using ChatApp.Core.Entities;
 using ChatApp.CQRS.Commands.Users;
+using ChatApp.CQRS.Shared;
 using ChatApp.Interfaces;
 using MediatR;
 using System.Threading;
@@ -22,8 +23,10 @@ namespace ChatApp.CQRS.Handlers.Users.Commands
 
         public async Task<User> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
         {
+            var photo = ImageConvertion.ImageToByteArray(command.Photo);
+
             var userCreateDTO = _mapper.Map<RegisterUserCommand, UserDTO>(command);
-            var user = await _unitOfWork.UserRepository.CreateUser(userCreateDTO);
+            var user = await _unitOfWork.UserRepository.CreateUser(userCreateDTO, photo);
 
             var result = _mapper.Map<UserDTO, User>(user);
 

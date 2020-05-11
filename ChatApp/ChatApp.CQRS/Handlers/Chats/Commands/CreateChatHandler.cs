@@ -2,6 +2,7 @@
 using ChatApp.Core.DTO;
 using ChatApp.Core.Entities;
 using ChatApp.CQRS.Commands.Chats;
+using ChatApp.CQRS.Commands.Users;
 using ChatApp.CQRS.Queries.Users;
 using ChatApp.Interfaces;
 using MediatR;
@@ -35,14 +36,16 @@ namespace ChatApp.CQRS.Handlers.Chats.Commands
                 chatUsersObjectId.Add(ObjectId.Parse(chatUserObjectId));
             }
 
-            var chat = _mapper.Map<(CreateChatCommand, List<ObjectId>), ChatDTO>((command, chatUsersObjectId));
+            var chat = _mapper.Map<(CreateChatCommand, IEnumerable<ObjectId>), ChatDTO>((command, chatUsersObjectId));
 
             var chatCreated = await _unitOfWork.ChatRepository.CreateChatAsync(chat);
-            var userCreator = await _mediator.Send(new GetUserByIdQuery(chatCreated.CreatedByUser.ToString()));
+
+            var userCreator = await _mediator.Send(new UpdateUserCommand(chatCreated.CreatedByUser, chatCreated.Id));
 
             foreach (var chatUsers in chatCreated.ChatUsers)
             {
                 usersChat.Add(await _mediator.Send(new GetUserByIdQuery(chatUsers.ToString())));
+                await _mediator.Send(new UpdateUserCommand(chatUsers, null, chatCreated.Id));
             }
 
             var result = _mapper.Map<(ChatDTO, User, IEnumerable<User>), Chat>((chatCreated, userCreator, usersChat));

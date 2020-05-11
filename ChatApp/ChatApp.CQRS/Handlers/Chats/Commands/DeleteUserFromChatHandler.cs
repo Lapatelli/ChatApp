@@ -31,13 +31,12 @@ namespace ChatApp.CQRS.Handlers.Chats.Commands
             var chat = await _unitOfWork.ChatRepository.DeleteUserFromChatAsync(command.ChatId, command.UserId);
             var userCreator = await _mediator.Send(new GetUserByIdQuery(chat.CreatedByUser.ToString()));
 
-
             foreach (var chatUsers in chat.ChatUsers)
             {
                 usersChat.Add(await _mediator.Send(new GetUserByIdQuery(chatUsers.ToString())));
             }
 
-            var result = _mapper.Map<(ChatDTO, User, IEnumerable<User>), Chat>((chat, userCreator, usersChat));
+            var result = _mapper.Map<(ChatDTO, User, List<User>), Chat>((chat, userCreator, usersChat));
 
             return result;
         }

@@ -25,7 +25,7 @@ namespace ChatApp.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("seatch/{chatName}")]
+        [HttpGet("search/{chatName}")]
         public async Task<IActionResult> GetChatByNameAsync(string chatName)
         {
             var chat = await _mediator.Send(new GetChatByNameQuery(chatName));

@@ -15,7 +15,7 @@ namespace ChatApp.CQRS.Commands.Chats
         public DateTime? CreatedAt { get; set; }
         public string CreatedByUser { get; set; }
         public ChatPrivacy ChatPrivacy { get; set; }
-        public IEnumerable<string> ChatUsers { get; set; }
+        public List<string> ChatUsers { get; set; }
 
         //add Picture property
     }

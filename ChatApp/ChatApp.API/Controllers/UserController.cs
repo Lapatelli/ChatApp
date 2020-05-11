@@ -64,5 +64,16 @@ namespace ChatApp.API.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
+        {
+            var user =  await _mediator.Send(new RegisterUserCommand(model.FirstName, model.LastName, model.EmailAddress, model.TelephoneNumber, model.Photo));
+
+            var result = _mapper.Map<User, UserViewModel>(user);
+
+            return Ok(result);
+        }
     }
 }

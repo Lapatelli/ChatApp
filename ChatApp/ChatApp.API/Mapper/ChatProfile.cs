@@ -34,7 +34,7 @@ namespace ChatApp.API.Mapper
                     ChatUsers = src.ChatUsers
                 });
 
-            CreateMap<(ChatDTO chat, User user, IEnumerable<User> chatUsers), Chat>()
+            CreateMap<(ChatDTO chat, User user, List<User> chatUsers), Chat>()
                 .ConvertUsing(src => new Chat
                 {
                     Id = src.chat.Id.ToString(),

@@ -19,7 +19,8 @@ namespace ChatApp.API.Mapper
                     LastName = src.LastName,
                     EmailAddress = src.EmailAddress,
                     TelephoneNumber = src.TelephoneNumber,
-                    UserStatus = src.UserStatus
+                    UserStatus = src.UserStatus,
+                    Photo = src.Photo
                 });
 
             CreateMap<UserDTO, User>()
@@ -30,8 +31,8 @@ namespace ChatApp.API.Mapper
                     LastName = src.LastName,
                     TelephoneNumber = src.TelephoneNumber,
                     EmailAddress = src.EmailAddress,
-                    UserStatus = src.UserStatus
-                    //ADD CHATS and CREATED CHATS
+                    UserStatus = src.UserStatus,
+                    Photo = src.Photo 
                 });
 
             CreateMap<(UpdateUserViewModel model, string userId), UpdateUserCommand>()
@@ -51,7 +52,9 @@ namespace ChatApp.API.Mapper
                     FirstName = src.FirstName,
                     LastName = src.LastName,
                     TelephoneNumber = src.TelephoneNumber,
-                    EmailAddress = src.EmailAddress
+                    EmailAddress = src.EmailAddress,
+                    CreatedChats = src.CreatedChats,
+                    Chats = src.Chats
                 });
 
             CreateMap<RegisterUserCommand, UserDTO>()
@@ -61,7 +64,8 @@ namespace ChatApp.API.Mapper
                     FirstName = src.FirstName,
                     LastName = src.LastName,
                     TelephoneNumber = src.TelephoneNumber,
-                    EmailAddress = src.EmailAddress
+                    EmailAddress = src.EmailAddress,
+                    Photo = src.Photo
                 });
         }
     }

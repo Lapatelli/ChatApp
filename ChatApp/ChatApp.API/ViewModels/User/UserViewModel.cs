@@ -14,5 +14,6 @@ namespace ChatApp.API.ViewModels.User
         public IEnumerable<Core.Entities.Chat> CreatedChats { get; set; }
         public IEnumerable<Core.Entities.Chat> Chats { get; set; }
         public UserStatus UserStatus { get; set; }
+        public string Photo {get; set;}
     }
 }

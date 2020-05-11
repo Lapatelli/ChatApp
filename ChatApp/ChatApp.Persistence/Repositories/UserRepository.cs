@@ -38,8 +38,9 @@ namespace ChatApp.Persistence.Repositories
             return await _db.Users.Find(us => us.EmailAddress == email).AnyAsync();
         }
 
-        public async Task<UserDTO> CreateUser(UserDTO user)
+        public async Task<UserDTO> CreateUser(UserDTO user, byte[] photo)
         {
+            user.BytePhoto = photo;
             await _db.Users.InsertOneAsync(user);
 
             return user;
@@ -47,11 +48,50 @@ namespace ChatApp.Persistence.Repositories
 
         public async Task<UserDTO> UpdateUser(UserDTO user)
         {
+            List<ObjectId> chats = new List<ObjectId>();
+            List<ObjectId> createdChats = new List<ObjectId>();
+
             var userDb = await SearchUserById(user.Id);
 
-            user.Chats = userDb.Chats;
-            user.UserStatus = userDb.UserStatus;
-            user.CreatedChats = userDb.CreatedChats;
+            if (userDb.Chats != null)
+            {
+                foreach (var userDbChat in userDb.Chats)
+                {
+                    chats.Add(userDbChat);
+                }
+            }
+            if (userDb.CreatedChats != null)
+            {
+                foreach (var userDbCreatingChats in userDb.CreatedChats)
+                {
+                    createdChats.Add(userDbCreatingChats);
+                }
+            }
+
+            if (user.Chats != null)
+            {
+                foreach (var userChat in user.Chats)
+                {
+                    chats.Add(userChat);
+                }
+            }
+
+            if (user.CreatedChats != null)
+            {
+                foreach (var userCreatingChats in user.CreatedChats)
+                {
+                    createdChats.Add(userCreatingChats);
+                }
+            }
+
+            user.FirstName = user.FirstName ?? userDb.FirstName;
+            user.LastName = user.LastName ?? userDb.LastName;
+            user.EmailAddress = user.EmailAddress ?? userDb.EmailAddress;
+            user.TelephoneNumber = user.TelephoneNumber ?? userDb.TelephoneNumber;
+            user.Photo = user.Photo ?? userDb.Photo;
+            user.BytePhoto = user.BytePhoto ?? userDb.BytePhoto;
+            user.CreatedChats = createdChats;
+            user.Chats = chats;
 
             await _db.Users.ReplaceOneAsync(new BsonDocument("_id", user.Id), user);
 

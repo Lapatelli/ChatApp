@@ -10,6 +10,6 @@ namespace ChatApp.CQRS.Commands.Chats
         public ObjectId Id { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
-        public ChatPrivacy ChatPrivacy { get; set; }
+        public ChatPrivacy? ChatPrivacy { get; set; }
     }
 }

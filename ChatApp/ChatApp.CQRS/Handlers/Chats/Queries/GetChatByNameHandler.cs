@@ -26,18 +26,18 @@ namespace ChatApp.CQRS.Handlers.Chats.Queries
         }
         public async Task<Chat> Handle(GetChatByNameQuery query, CancellationToken cancellationToken)
         {
+            var usersChat = new List<User>();
 
             var chat = await _unitOfWork.ChatRepository.SearchChatByName(query.Name);
 
             var userCreator = await _mediator.Send(new GetUserByIdQuery(chat.CreatedByUser.ToString()));
 
-            var usersChat = new List<User>();
             foreach (var chatUsers in chat.ChatUsers)
             {
                 usersChat.Add(await _mediator.Send(new GetUserByIdQuery(chatUsers.ToString())));
             }
 
-            var result = _mapper.Map<(ChatDTO, User, IEnumerable<User>), Chat>((chat, userCreator, usersChat));
+            var result = _mapper.Map<(ChatDTO, User, List<User>), Chat>((chat, userCreator, usersChat));
 
             return result;
         }

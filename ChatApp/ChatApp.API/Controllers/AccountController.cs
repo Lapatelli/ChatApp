@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using ChatApp.Core.Enums;
 using ChatApp.CQRS.Commands.Users;
@@ -53,9 +54,10 @@ namespace ChatApp.API.Controllers
             {
                 string firstName = authenticateResult.Principal.FindFirstValue(ClaimTypes.GivenName);
                 string lastName = authenticateResult.Principal.FindFirstValue(ClaimTypes.Surname);
-                string telephoneNumber = authenticateResult.Principal.FindFirstValue(ClaimTypes.MobilePhone);
+                string telephoneNumber = authenticateResult.Principal.FindFirstValue(ClaimTypes.HomePhone);
+                string photo = authenticateResult.Principal.FindFirstValue("urn:google:picture");
 
-                await _mediator.Send(new RegisterUserCommand(firstName, lastName, email, telephoneNumber));
+                await _mediator.Send(new RegisterUserCommand(firstName, lastName, email, telephoneNumber, photo));
             }
 
             await _mediator.Send(new SetUserStatusCommand(email, UserStatus.Online));

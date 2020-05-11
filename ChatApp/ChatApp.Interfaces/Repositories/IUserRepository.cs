@@ -18,7 +18,7 @@ namespace ChatApp.Interfaces.Repositories
 
         Task<UserDTO> UpdateUserStatus(string emailAddress, UserStatus userStatus);
 
-        Task<UserDTO> CreateUser(UserDTO user);
+        Task<UserDTO> CreateUser(UserDTO user, byte[] photo);
 
         Task<UserDTO> UpdateUser(UserDTO user);
     }

@@ -5,6 +5,7 @@ using ChatApp.Persistence;
 using ChatApp.Persistence.Context;
 using ChatApp.Persistence.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
@@ -16,6 +17,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace ChatApp.API
 {
@@ -32,7 +35,7 @@ namespace ChatApp.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IMongoClient>(s => new MongoClient(Configuration.GetSection("ChatDatabaseSettings:ConnectionString").Value));
-            services.AddScoped(s => new ChatDbContext(s.GetRequiredService<IMongoClient>(), Configuration.GetSection("ChatDatabaseSettings:DatabaseName").Value));
+            services.AddSingleton(s => new ChatDbContext(s.GetRequiredService<IMongoClient>(), Configuration.GetSection("ChatDatabaseSettings:DatabaseName").Value));
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IChatRepository, ChatRepository>();
@@ -57,6 +60,8 @@ namespace ChatApp.API
                     options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     options.ClientId = "158339939419-r3gh8lgsd3dp7nl1kihedga6q44080gk.apps.googleusercontent.com";
                     options.ClientSecret = "UrHalybWKgGiIooMBJzXMFVV";
+                    options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
+                    //options.ClaimActions.MapJsonKey(ClaimTypes.MobilePhone, "mobilephone", "string");
                 });
 
             services.AddMediatR(AppDomain.CurrentDomain.Load("ChatApp.CQRS"));
@@ -87,6 +92,8 @@ namespace ChatApp.API
             app.UseAuthorization();
 
             app.UseCookiePolicy();
+
+            app.UseStaticFiles();
 
             app.UseEndpoints(endpoints =>
             {

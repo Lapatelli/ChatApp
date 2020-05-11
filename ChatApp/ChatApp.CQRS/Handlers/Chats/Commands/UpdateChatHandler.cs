@@ -5,9 +5,7 @@ using ChatApp.CQRS.Commands.Chats;
 using ChatApp.CQRS.Queries.Users;
 using ChatApp.Interfaces;
 using MediatR;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,7 +29,9 @@ namespace ChatApp.CQRS.Handlers.Chats.Commands
             List<User> usersChat = new List<User>();
 
             var chatUpdateDTO = _mapper.Map<UpdateChatCommand, ChatDTO>(command);
+
             var chat = await _unitOfWork.ChatRepository.UpdateChatAsync(chatUpdateDTO);
+
             var userCreator = await _mediator.Send(new GetUserByIdQuery(chat.CreatedByUser.ToString()));
 
             foreach (var chatUsers in chat.ChatUsers)
@@ -39,7 +39,7 @@ namespace ChatApp.CQRS.Handlers.Chats.Commands
                 usersChat.Add(await _mediator.Send(new GetUserByIdQuery(chatUsers.ToString())));
             }
 
-            var result = _mapper.Map<(ChatDTO, User, IEnumerable<User>), Chat>((chat, userCreator, usersChat));
+            var result = _mapper.Map<(ChatDTO, User, List<User>), Chat>((chat, userCreator, usersChat));
 
             return result;
         }

@@ -26,11 +26,12 @@ namespace ChatApp.Core.DTO
         public ObjectId CreatedByUser { get; set; }
 
         [BsonElement("ChatPrivacy")]
-        public ChatPrivacy ChatPrivacy { get; set; }
+        public ChatPrivacy? ChatPrivacy { get; set; }
 
         [BsonElement("ChatUsers")]
-        public IEnumerable<ObjectId> ChatUsers { get; set; }
+        public List<ObjectId> ChatUsers { get; set; }
 
-        //add Picture property
+        [BsonElement("Picture")]
+        public byte[] Picture { get; set; }
     }
 }

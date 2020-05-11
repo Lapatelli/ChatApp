@@ -10,10 +10,9 @@ namespace ChatApp.Core.Entities
         public string LastName { get; set; }
         public string EmailAddress { get; set; }
         public string TelephoneNumber { get; set; }
-        public IEnumerable<Chat> CreatedChats { get; set; }
-        public IEnumerable<Chat> Chats { get; set; }
+        public List<Chat> CreatedChats { get; set; }
+        public List<Chat> Chats { get; set; }
         public UserStatus UserStatus { get; set; }
-
-        // Add Photo Property
+        public string Photo { get; set; }
     }
 }
