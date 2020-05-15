@@ -2,7 +2,7 @@
 using ChatApp.Core.DTO;
 using ChatApp.Core.Entities;
 using ChatApp.CQRS.Commands.Chats;
-using ChatApp.CQRS.Queries.Users;
+using ChatApp.CQRS.Shared;
 using ChatApp.Interfaces;
 using MediatR;
 using MongoDB.Bson;
@@ -15,37 +15,48 @@ namespace ChatApp.CQRS.Handlers.Chats.Commands
     public class CreateChatHandler : IRequestHandler<CreateChatCommand, Chat>
     {
         private readonly IMapper _mapper;
-        private readonly IMediator _mediator;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreateChatHandler(IUnitOfWork unitOfWork, IMediator mediator, IMapper mapper)
+        public CreateChatHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
-            _mediator = mediator;
             _mapper = mapper;
         }
 
         public async Task<Chat> Handle(CreateChatCommand command, CancellationToken cancellationToken)
         {
-            List<ObjectId> chatUsersObjectId = new List<ObjectId>();
-            List<User> usersChat = new List<User>();
+            var picture = command.Picture != null ? ImageConvertion.PictureToByteArray(command.Picture) : null;
+            var chatUsersObjectId = new List<ObjectId>();
+            ChatDTO chat;
 
-            foreach (var chatUserObjectId in command.ChatUsers)
+            if (command.ChatUsers[0] != null)
             {
-                chatUsersObjectId.Add(ObjectId.Parse(chatUserObjectId));
+                foreach (var chatUserObjectId in command.ChatUsers)
+                {
+                    chatUsersObjectId.Add(ObjectId.Parse(chatUserObjectId));
+                }
+
+                chat = _mapper.Map<(CreateChatCommand, List<ObjectId>, byte[]), ChatDTO>((command, chatUsersObjectId, picture));
+
+                foreach (var chatUser in chat.ChatUsersId)
+                {
+                    _unitOfWork.UserRepository.UpdateUserChats(chatUser, chat.Id, false, true);
+                }
+            }
+            else
+            {
+                chat = _mapper.Map<(CreateChatCommand, byte[]), ChatDTO>((command, picture));
             }
 
-            var chat = _mapper.Map<(CreateChatCommand, List<ObjectId>), ChatDTO>((command, chatUsersObjectId));
+            _unitOfWork.ChatRepository.CreateChat(chat);
+            _unitOfWork.UserRepository.UpdateUserChats(chat.CreatedByUserId, chat.Id, true, true);
 
-            var chatCreated = await _unitOfWork.ChatRepository.CreateChatAsync(chat);
-            var userCreator = await _mediator.Send(new GetUserByIdQuery(chatCreated.CreatedByUser.ToString()));
+            await _unitOfWork.CommitAsync();
 
-            foreach (var chatUsers in chatCreated.ChatUsers)
-            {
-                usersChat.Add(await _mediator.Send(new GetUserByIdQuery(chatUsers.ToString())));
-            }
+            var chatWithUsersDTO = await _unitOfWork.ChatRepository.GetAggregateChatWithUsers(chat);
 
-            var result = _mapper.Map<(ChatDTO, User, IEnumerable<User>), Chat>((chatCreated, userCreator, usersChat));
+            var chatUsers = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<User>>(chatWithUsersDTO.ChatUsers);
+            var result = _mapper.Map<(ChatWithUsersDTO, IEnumerable<User>), Chat>((chatWithUsersDTO, chatUsers));
 
             return result;
         }

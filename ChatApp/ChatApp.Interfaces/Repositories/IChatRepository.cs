@@ -1,21 +1,28 @@
 ﻿using ChatApp.Core.DTO;
 using MongoDB.Bson;
+using System;
 using System.Threading.Tasks;
 
 namespace ChatApp.Interfaces.Repositories
 {
-    public interface IChatRepository
+    public interface IChatRepository : IDisposable
     {
-        Task<ChatDTO> SearchChatByName(string name);
+        Task<ChatDTO> GetChatById(ObjectId chatId);
 
-        Task<ChatDTO> CreateChatAsync(ChatDTO chat);
+        Task<ChatWithUsersDTO> GetAggregateChatWithUsers(ChatDTO chat);
 
-        Task DeleteChatAsync(ObjectId chatId);
+        Task<ChatWithUsersDTO> GetAggregateChatWithUsers(ObjectId chatId);
 
-        Task<ChatDTO> DeleteUserFromChatAsync(ObjectId chatId, ObjectId userId);
+        Task<ChatWithUsersDTO> SearchChatByName(string name);
 
-        Task<ChatDTO> AddUserToChatAsync(ObjectId chatId, ObjectId userId);
+        void CreateChat(ChatDTO chat);
 
-        Task<ChatDTO> UpdateChatAsync(ChatDTO chat);
+        void UpdateChat(ChatDTO chat);
+
+        void DeleteChatAsync(ObjectId chatId);
+
+        void AddUserToChatAsync(ObjectId chatId, ObjectId userId);
+
+        void DeleteUserFromChatAsync(ObjectId chatId, ObjectId userId);
     }
 }

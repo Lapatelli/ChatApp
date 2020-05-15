@@ -1,13 +1,11 @@
 ﻿
-using Microsoft.AspNetCore.Http;
-
 namespace ChatApp.API.ViewModels.User
 {
-    public class UpdateUserViewModel
+    public class RegisterViewModel
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string EmailAddress { get; set; }
-        public IFormFile Photo { get; set; }
+        public string Photo { get; set; }
     }
 }

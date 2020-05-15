@@ -5,7 +5,6 @@ using ChatApp.CQRS.Queries.Users;
 using ChatApp.Interfaces;
 using MediatR;
 using MongoDB.Bson;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,6 +20,7 @@ namespace ChatApp.CQRS.Handlers.Queries.Users
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+
         public async Task<User> Handle(GetUserByIdQuery query, CancellationToken cancellationToken)
         {
             var idUser = ObjectId.Parse(query.Id);
@@ -28,7 +28,7 @@ namespace ChatApp.CQRS.Handlers.Queries.Users
 
             var result = _mapper.Map<UserDTO, User>(user);
 
-             return result;
+            return result;
         }
     }
 }

@@ -2,7 +2,6 @@
 using ChatApp.Core.DTO;
 using ChatApp.Core.Entities;
 using ChatApp.CQRS.Commands.Chats;
-using ChatApp.CQRS.Queries.Users;
 using ChatApp.Interfaces;
 using MediatR;
 using System.Collections.Generic;
@@ -13,31 +12,25 @@ namespace ChatApp.CQRS.Handlers.Chats.Commands
 {
     public class DeleteUserFromChatHandler : IRequestHandler<DeleteUserFromChatCommand, Chat>
     {
-        private readonly IMapper _mapper;
-        private readonly IMediator _mediator;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public DeleteUserFromChatHandler(IUnitOfWork unitOfWork, IMediator mediator, IMapper mapper)
+        public DeleteUserFromChatHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
-            _mediator = mediator;
             _mapper = mapper;
         }
 
         public async Task<Chat> Handle(DeleteUserFromChatCommand command, CancellationToken cancellationToken)
         {
-            List<User> usersChat = new List<User>();
+            _unitOfWork.ChatRepository.DeleteUserFromChatAsync(command.ChatId, command.UserId);
+            _unitOfWork.UserRepository.UpdateUserChats(command.UserId, command.ChatId, false, false);
+            await _unitOfWork.CommitAsync();
 
-            var chat = await _unitOfWork.ChatRepository.DeleteUserFromChatAsync(command.ChatId, command.UserId);
-            var userCreator = await _mediator.Send(new GetUserByIdQuery(chat.CreatedByUser.ToString()));
+            var chatWithUsersDTO = await _unitOfWork.ChatRepository.GetAggregateChatWithUsers(command.ChatId);
 
-
-            foreach (var chatUsers in chat.ChatUsers)
-            {
-                usersChat.Add(await _mediator.Send(new GetUserByIdQuery(chatUsers.ToString())));
-            }
-
-            var result = _mapper.Map<(ChatDTO, User, IEnumerable<User>), Chat>((chat, userCreator, usersChat));
+            var chatUsers = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<User>>(chatWithUsersDTO.ChatUsers);
+            var result = _mapper.Map<(ChatWithUsersDTO, IEnumerable<User>), Chat>((chatWithUsersDTO, chatUsers));
 
             return result;
         }

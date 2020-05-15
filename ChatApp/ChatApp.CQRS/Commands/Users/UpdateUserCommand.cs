@@ -1,5 +1,6 @@
 ﻿using ChatApp.Core.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using MongoDB.Bson;
 
 namespace ChatApp.CQRS.Commands.Users
@@ -10,6 +11,6 @@ namespace ChatApp.CQRS.Commands.Users
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string EmailAddress { get; set; }
-        public string TelephoneNumber { get; set; }
+        public IFormFile Photo { get; set; }
     }
 }

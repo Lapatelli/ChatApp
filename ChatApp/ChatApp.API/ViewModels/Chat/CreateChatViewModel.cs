@@ -1,4 +1,5 @@
 ﻿using ChatApp.Core.Enums;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 
 namespace ChatApp.API.ViewModels.Chat
@@ -8,6 +9,7 @@ namespace ChatApp.API.ViewModels.Chat
         public string Name { get; set; }
         public string Password { get; set; }
         public ChatPrivacy ChatPrivacy { get; set; }
-        public IEnumerable<string> ChatUsers { get; set; }
+        public List<string> ChatUsers { get; set; }
+        public IFormFile Picture { get; set; }
     }
 }
