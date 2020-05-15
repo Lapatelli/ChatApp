@@ -10,7 +10,7 @@ namespace ChatApp.API.ViewModels.Chat
         public string Name { get; set; }
         public string Password { get; set; }
         public ChatPrivacy? ChatPrivacy { get; set; }
-        public byte[] Picture { get; set; }
         public IEnumerable<UserInfoViewModel> ChatUsers { get; set; }
+        public byte[] Picture { get; set; }
     }
 }

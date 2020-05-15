@@ -26,13 +26,12 @@ namespace ChatApp.CQRS.Handlers.Chats.Commands
         public async Task<Chat> Handle(UpdateChatCommand command, CancellationToken cancellationToken)
         {
             var picture = command.Picture != null ? ImageConvertion.PictureToByteArray(command.Picture) : null;
-
             ChatDTO chatUpdate;
 
             //[FromForm] always make command.ChatUsers.Count = 1 (if even we don't give any info or long list new ChatUsers)
             if (command.ChatUsers[0] != null)
             {
-                List<ObjectId> chatUsersObjectId = new List<ObjectId>();
+               var chatUsersObjectId = new List<ObjectId>();
 
                 foreach (var chatUserObjectId in command.ChatUsers)
                 {
@@ -54,7 +53,10 @@ namespace ChatApp.CQRS.Handlers.Chats.Commands
             _unitOfWork.ChatRepository.UpdateChat(chatUpdate);
             await _unitOfWork.CommitAsync();
 
-            var result = await _unitOfWork.ChatRepository.GetAggregateChatWithUsers(chatUpdate);
+            var chatWithUsersDTO = await _unitOfWork.ChatRepository.GetAggregateChatWithUsers(chatUpdate);
+
+            var chatUsers = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<User>>(chatWithUsersDTO.ChatUsers);
+            var result = _mapper.Map<(ChatWithUsersDTO, IEnumerable<User>), Chat>((chatWithUsersDTO, chatUsers));
 
             return result;
         }

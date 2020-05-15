@@ -65,6 +65,18 @@ namespace ChatApp.API.Mapper
                     Picture = src.picture
                 });
 
+            CreateMap<(CreateChatCommand command, byte[] picture), ChatDTO>()
+                .ConvertUsing(src => new ChatDTO
+                {
+                    Id = src.command.Id,
+                    Name = src.command.Name,
+                    Password = src.command.Password,
+                    CreatedAt = src.command.CreatedAt,
+                    CreatedByUserId = ObjectId.Parse(src.command.CreatedByUser),
+                    ChatPrivacy = src.command.ChatPrivacy,
+                    Picture = src.picture
+                });
+
             CreateMap<(UpdateChatCommand command, List<ObjectId> chatUsers, byte[] picture), ChatDTO>()
                 .ConvertUsing(src => new ChatDTO
                 {
@@ -86,6 +98,27 @@ namespace ChatApp.API.Mapper
                     Picture = src.picture
                 });
 
+            CreateMap<ChatDTO, Chat>()
+                .ConvertUsing(src => new Chat
+                {
+                    Id = src.Id,
+                    Name = src.Name,
+                    Password = src.Password,
+                    ChatPrivacy = src.ChatPrivacy,
+                    Picture = src.Picture
+                });
+
+            CreateMap<(ChatWithUsersDTO chat, IEnumerable<User> chatUsers), Chat>()
+                .ConvertUsing(src => new Chat
+                {
+                    Id = src.chat.Id,
+                    Name = src.chat.Name,
+                    Password = src.chat.Password,
+                    ChatPrivacy = src.chat.ChatPrivacy,
+                    Picture = src.chat.Picture,
+                    ChatUsers = src.chatUsers
+                });
+
             CreateMap<(Chat chat, IEnumerable<UserInfoViewModel> chatUsers), ChatViewModel>()
                 .ConvertUsing(src => new ChatViewModel
                 {
@@ -97,14 +130,14 @@ namespace ChatApp.API.Mapper
                     ChatUsers = src.chatUsers,
                 });
 
-            CreateMap<ChatDTO, ChatInfoViewModel>()
+            CreateMap<Chat, ChatInfoViewModel>()
                 .ConvertUsing(src => new ChatInfoViewModel
                 {
                     Id = src.Id.ToString(),
                     Name = src.Name,
-                    //Password = src.Password,
+                    Password = src.Password,
                     ChatPrivacy = src.ChatPrivacy,
-                    //Picture = src.Picture
+                    Picture = src.Picture
                 });
         }
     }

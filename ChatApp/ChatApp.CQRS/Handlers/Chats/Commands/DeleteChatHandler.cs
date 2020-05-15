@@ -17,7 +17,7 @@ namespace ChatApp.CQRS.Handlers.Chats.Commands
 
         public async Task<Unit> Handle(DeleteChatCommand command, CancellationToken cancellationToken)
         {
-            var chatToDelete = await _unitOfWork.ChatRepository.GetAggregateChatWithUsers(command.ChatId);
+            var chatToDelete = await _unitOfWork.ChatRepository.GetChatById(command.ChatId);
             _unitOfWork.ChatRepository.DeleteChatAsync(command.ChatId);
 
             foreach (var chatUser in chatToDelete.ChatUsersId)

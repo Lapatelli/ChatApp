@@ -19,7 +19,7 @@ namespace ChatApp.Persistence
         public IUserRepository UserRepository { get; set; }
         public IChatRepository ChatRepository { get; set; }
 
-        public Task<int> CommitAsync()
+        public Task CommitAsync()
         {
             return _context.SaveChanges();
         }

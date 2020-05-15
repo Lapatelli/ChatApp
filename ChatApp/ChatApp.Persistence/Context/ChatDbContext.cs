@@ -37,7 +37,7 @@ namespace ChatApp.Persistence.Context
             }
         }
 
-        public async Task<int> SaveChanges()
+        public async Task SaveChanges()
         {
             using (Session = await MongoClient.StartSessionAsync())
             {
@@ -50,7 +50,7 @@ namespace ChatApp.Persistence.Context
                 await Session.CommitTransactionAsync();
             }
 
-            return _commands.Count;
+             _commands.Clear();
         }
 
         public void AddCommand(Func<Task> func)

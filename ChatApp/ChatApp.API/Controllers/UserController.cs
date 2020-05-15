@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using ChatApp.API.ViewModels.Chat;
 using ChatApp.API.ViewModels.User;
-using ChatApp.Core.DTO;
 using ChatApp.Core.Entities;
 using ChatApp.CQRS.Commands.Users;
 using ChatApp.CQRS.Queries.Users;
@@ -33,7 +32,7 @@ namespace ChatApp.API.Controllers
         public async Task<IActionResult> GetAllUsersAsync()
         {
             var users = await _mediator.Send(new GetAllUsersQuery());
-            var result = _mapper.Map<IEnumerable<User>, IEnumerable<UserViewModel>>(users);
+            var result = _mapper.Map<IEnumerable<User>, IEnumerable<UserInfoViewModel>>(users);
 
             return Ok(result);
         }
@@ -43,7 +42,7 @@ namespace ChatApp.API.Controllers
         {
             var user = await _mediator.Send(new GetAllChatsForUserQuery(userId));
 
-            var userChats = _mapper.Map<IEnumerable<ChatDTO>, IEnumerable<ChatInfoViewModel>>(user.Chats);
+            var userChats = _mapper.Map<IEnumerable<Chat>, IEnumerable<ChatInfoViewModel>>(user.Chats);
             var result = _mapper.Map<(User, IEnumerable<ChatInfoViewModel>), UserViewModel>((user, userChats));
 
             return Ok(result);
@@ -53,7 +52,7 @@ namespace ChatApp.API.Controllers
         public async Task<IActionResult> GetUserByNameAsync(string userName)
         {
             var user = await _mediator.Send(new GetUserByNameQuery(userName));
-            var result = _mapper.Map<IEnumerable<User>, IEnumerable<UserViewModel>>(user);
+            var result = _mapper.Map<IEnumerable<User>, IEnumerable<UserInfoViewModel>>(user);
 
             return Ok(result);
         }

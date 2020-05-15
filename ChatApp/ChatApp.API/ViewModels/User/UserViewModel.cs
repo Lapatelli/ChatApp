@@ -10,9 +10,8 @@ namespace ChatApp.API.ViewModels.User
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string EmailAddress { get; set; }
-        public IEnumerable<Core.Entities.Chat> CreatedChats { get; set; }
-        public IEnumerable<ChatInfoViewModel> Chats { get; set; }
         public UserStatus UserStatus { get; set; }
-        //public byte[] BytePhoto {get; set;}
+        public IEnumerable<ChatInfoViewModel> Chats { get; set; }
+        public byte[] BytePhoto {get; set;}
     }
 }

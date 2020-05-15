@@ -1,5 +1,4 @@
 ﻿using ChatApp.Core.DTO;
-using ChatApp.Core.Entities;
 using ChatApp.Core.Enums;
 using ChatApp.Interfaces.Repositories;
 using ChatApp.Persistence.Context;
@@ -25,10 +24,10 @@ namespace ChatApp.Persistence.Repositories
             return await _db.Users.Aggregate().SortByDescending(us => us.UserStatus).ThenBy(us => us.LastName).ToListAsync();
         }
 
-        public async Task<User> GetAllChatsForUser(ObjectId id)
+        public async Task<UserWithChatsDTO> GetAllChatsForUser(ObjectId id)
         {
             return await _db.Users.Aggregate().Match(us => us.Id == id)
-                .Lookup<UserDTO, ChatDTO, User>(_db.Chats, us => us.ChatsId, ch => ch.Id, us => us.Chats)
+                .Lookup<UserDTO, ChatDTO, UserWithChatsDTO>(_db.Chats, us => us.ChatsId, ch => ch.Id, us => us.Chats)
                 .FirstOrDefaultAsync();
         }
 

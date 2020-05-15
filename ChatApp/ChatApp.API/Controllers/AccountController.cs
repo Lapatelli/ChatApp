@@ -40,8 +40,7 @@ namespace ChatApp.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        [Route("google-login")]
+        [HttpGet("google-login")]
         public IActionResult Login(string returnUrl)
         {
             return new ChallengeResult(
@@ -53,23 +52,21 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpGet("signin-google")]
-        public async Task<IActionResult> LoginCallback(string returnUrl = null)
+        public async Task<IActionResult> LoginCallback(string returnUrl = "~/")
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
-            
             var authenticateResult = await HttpContext.AuthenticateAsync();
 
             if (!authenticateResult.Succeeded)
                 return BadRequest();
 
-            string email = authenticateResult.Principal.FindFirstValue(ClaimTypes.Email);
+            var email = authenticateResult.Principal.FindFirstValue(ClaimTypes.Email);
             var isUserExist = await _mediator.Send(new GetUserByEmailQuery(email));
 
             if (!isUserExist)
             {
-                string firstName = authenticateResult.Principal.FindFirstValue(ClaimTypes.GivenName);
-                string lastName = authenticateResult.Principal.FindFirstValue(ClaimTypes.Surname);
-                string photo = authenticateResult.Principal.FindFirstValue("urn:google:picture");
+                var firstName = authenticateResult.Principal.FindFirstValue(ClaimTypes.GivenName);
+                var lastName = authenticateResult.Principal.FindFirstValue(ClaimTypes.Surname);
+                var photo = authenticateResult.Principal.FindFirstValue("urn:google:picture");
 
                 await _mediator.Send(new RegisterUserCommand(firstName, lastName, email, photo));
             }
@@ -84,7 +81,7 @@ namespace ChatApp.API.Controllers
         {
             returnUrl = returnUrl ?? Url.Content("~/");
 
-           await _mediator.Send(new SetUserStatusCommand(HttpContext.User.FindFirstValue(ClaimTypes.Email), UserStatus.Offline));
+            await _mediator.Send(new SetUserStatusCommand(HttpContext.User.FindFirstValue(ClaimTypes.Email), UserStatus.Offline));
 
             await HttpContext.SignOutAsync();
             HttpContext.Response.Cookies.Delete(".AspNetCore.Cookies");

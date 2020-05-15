@@ -1,5 +1,4 @@
 ﻿using ChatApp.Core.DTO;
-using ChatApp.Core.Entities;
 using MongoDB.Bson;
 using System;
 using System.Threading.Tasks;
@@ -8,11 +7,13 @@ namespace ChatApp.Interfaces.Repositories
 {
     public interface IChatRepository : IDisposable
     {
-        Task<Chat> GetAggregateChatWithUsers(ChatDTO chat);
+        Task<ChatDTO> GetChatById(ObjectId chatId);
 
-        Task<Chat> GetAggregateChatWithUsers(ObjectId chatId);
+        Task<ChatWithUsersDTO> GetAggregateChatWithUsers(ChatDTO chat);
 
-        Task<Chat> SearchChatByName(string name);
+        Task<ChatWithUsersDTO> GetAggregateChatWithUsers(ObjectId chatId);
+
+        Task<ChatWithUsersDTO> SearchChatByName(string name);
 
         void CreateChat(ChatDTO chat);
 

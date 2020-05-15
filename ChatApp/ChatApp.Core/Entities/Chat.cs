@@ -1,11 +1,16 @@
-﻿using ChatApp.Core.DTO;
+﻿using ChatApp.Core.Enums;
+using MongoDB.Bson;
 using System.Collections.Generic;
 
 namespace ChatApp.Core.Entities
 {
-    public class Chat : ChatDTO
+    public class Chat
     {
-        public List<UserDTO> CreatedByUser { get; set; }
-        public List<UserDTO> ChatUsers { get; set; }
+        public ObjectId Id { get; set; }
+        public string Name { get; set; }
+        public string Password { get; set; }
+        public ChatPrivacy? ChatPrivacy { get; set; }
+        public byte[] Picture { get; set; }
+        public IEnumerable<User> ChatUsers { get; set; }
     }
 }

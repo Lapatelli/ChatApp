@@ -48,11 +48,24 @@ namespace ChatApp.API.Mapper
             CreateMap<UserDTO, User>()
                 .ConvertUsing(src => new User
                 {
+                    Id = src.Id,
                     FirstName = src.FirstName,
                     LastName = src.LastName,
                     EmailAddress = src.EmailAddress,
                     UserStatus = src.UserStatus,
                     BytePhoto = src.BytePhoto
+                });
+
+            CreateMap<(UserWithChatsDTO user, IEnumerable<Chat> userChats), User>()
+                .ConvertUsing(src => new User
+                {
+                    Id = src.user.Id,
+                    FirstName = src.user.FirstName,
+                    LastName = src.user.LastName,
+                    EmailAddress = src.user.EmailAddress,
+                    UserStatus = src.user.UserStatus,
+                    BytePhoto = src.user.BytePhoto,
+                    Chats = src.userChats
                 });
 
             CreateMap<User, UserViewModel>()
@@ -63,8 +76,19 @@ namespace ChatApp.API.Mapper
                     LastName = src.LastName,
                     EmailAddress = src.EmailAddress,
                     UserStatus = src.UserStatus,
-                    //BytePhoto = src.BytePhoto
+                    BytePhoto = src.BytePhoto
                  });
+
+            CreateMap<User, UserInfoViewModel>()
+                .ConvertUsing(src => new UserInfoViewModel
+                {
+                    Id = src.Id.ToString(),
+                    FirstName = src.FirstName,
+                    LastName = src.LastName,
+                    EmailAddress = src.EmailAddress,
+                    UserStatus = src.UserStatus,
+                    BytePhoto = src.BytePhoto
+                });
 
             CreateMap<(User user, IEnumerable<ChatInfoViewModel> chats), UserViewModel>()
                 .ConvertUsing(src => new UserViewModel
@@ -74,11 +98,11 @@ namespace ChatApp.API.Mapper
                     LastName = src.user.LastName,
                     EmailAddress = src.user.EmailAddress,
                     UserStatus = src.user.UserStatus,
-                    Chats = src.chats
-                    //BytePhoto = src.BytePhoto
+                    Chats = src.chats,
+                    BytePhoto = src.user.BytePhoto
                 });
 
-            CreateMap<UserDTO, UserInfoViewModel>()
+            CreateMap<User, UserInfoViewModel>()
                 .ConvertUsing(src => new UserInfoViewModel
                 {
                     Id = src.Id.ToString(),

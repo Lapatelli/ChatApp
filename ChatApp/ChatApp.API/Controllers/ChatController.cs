@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using ChatApp.API.ViewModels.Chat;
 using ChatApp.API.ViewModels.User;
-using ChatApp.Core.DTO;
 using ChatApp.Core.Entities;
 using ChatApp.CQRS.Commands.Chats;
 using ChatApp.CQRS.Queries.Chats;
@@ -33,7 +32,7 @@ namespace ChatApp.API.Controllers
         {
             var chat = await _mediator.Send(new GetChatByNameQuery(chatName));
 
-            var chatUsers = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<UserInfoViewModel>>(chat.ChatUsers);
+            var chatUsers = _mapper.Map<IEnumerable<User>, IEnumerable<UserInfoViewModel>>(chat.ChatUsers);
             var result = _mapper.Map<(Chat, IEnumerable<UserInfoViewModel>), ChatViewModel>((chat, chatUsers));
 
             return Ok(result);
@@ -45,7 +44,7 @@ namespace ChatApp.API.Controllers
             var chatCreationCommand = _mapper.Map<(CreateChatViewModel, string), CreateChatCommand>((createChatViewModel, userId));
             var chat = await _mediator.Send(chatCreationCommand);
 
-            var chatUsers = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<UserInfoViewModel>>(chat.ChatUsers);
+            var chatUsers = _mapper.Map<IEnumerable<User>, IEnumerable<UserInfoViewModel>>(chat.ChatUsers);
             var result = _mapper.Map<(Chat, IEnumerable<UserInfoViewModel>), ChatViewModel>((chat, chatUsers));
 
             return Ok(result);
@@ -57,7 +56,7 @@ namespace ChatApp.API.Controllers
             var updateChatCommand = _mapper.Map<(UpdateChatViewModel, string), UpdateChatCommand>((model, chatId));
             var chat = await _mediator.Send(updateChatCommand);
 
-            var chatUsers = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<UserInfoViewModel>>(chat.ChatUsers);
+            var chatUsers = _mapper.Map<IEnumerable<User>, IEnumerable<UserInfoViewModel>>(chat.ChatUsers);
             var result = _mapper.Map<(Chat, IEnumerable<UserInfoViewModel>), ChatViewModel>((chat, chatUsers));
 
             return Ok(result);
@@ -69,7 +68,7 @@ namespace ChatApp.API.Controllers
             var deleteUserFromChatCommand = _mapper.Map<(DeleteUserFromChatViewModel, string), DeleteUserFromChatCommand>((model, chatId));
             var chat = await _mediator.Send(deleteUserFromChatCommand);
 
-            var chatUsers = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<UserInfoViewModel>>(chat.ChatUsers);
+            var chatUsers = _mapper.Map<IEnumerable<User>, IEnumerable<UserInfoViewModel>>(chat.ChatUsers);
             var result = _mapper.Map<(Chat, IEnumerable<UserInfoViewModel>), ChatViewModel>((chat, chatUsers));
 
             return Ok(result);
@@ -81,7 +80,7 @@ namespace ChatApp.API.Controllers
             var addUserToChatCommand = _mapper.Map<(AddUserToChatViewModel, string), AddUserToChatCommand>((model, chatId));
             var chat = await _mediator.Send(addUserToChatCommand);
 
-            var chatUsers = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<UserInfoViewModel>>(chat.ChatUsers);
+            var chatUsers = _mapper.Map<IEnumerable<User>, IEnumerable<UserInfoViewModel>>(chat.ChatUsers);
             var result = _mapper.Map<(Chat, IEnumerable<UserInfoViewModel>), ChatViewModel>((chat, chatUsers));
 
             return Ok(result);

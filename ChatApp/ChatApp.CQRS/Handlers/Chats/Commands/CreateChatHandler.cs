@@ -25,27 +25,38 @@ namespace ChatApp.CQRS.Handlers.Chats.Commands
 
         public async Task<Chat> Handle(CreateChatCommand command, CancellationToken cancellationToken)
         {
-            List<ObjectId> chatUsersObjectId = new List<ObjectId>();
+            var picture = command.Picture != null ? ImageConvertion.PictureToByteArray(command.Picture) : null;
+            var chatUsersObjectId = new List<ObjectId>();
+            ChatDTO chat;
 
-            foreach (var chatUserObjectId in command.ChatUsers)
+            if (command.ChatUsers[0] != null)
             {
-                chatUsersObjectId.Add(ObjectId.Parse(chatUserObjectId));
-            }
+                foreach (var chatUserObjectId in command.ChatUsers)
+                {
+                    chatUsersObjectId.Add(ObjectId.Parse(chatUserObjectId));
+                }
 
-            var picture = command.Picture != null ? ImageConvertion.PictureToByteArray(command.Picture): null;
-            var chat = _mapper.Map<(CreateChatCommand, List<ObjectId>, byte[]), ChatDTO>((command, chatUsersObjectId, picture));
+                chat = _mapper.Map<(CreateChatCommand, List<ObjectId>, byte[]), ChatDTO>((command, chatUsersObjectId, picture));
+
+                foreach (var chatUser in chat.ChatUsersId)
+                {
+                    _unitOfWork.UserRepository.UpdateUserChats(chatUser, chat.Id, false, true);
+                }
+            }
+            else
+            {
+                chat = _mapper.Map<(CreateChatCommand, byte[]), ChatDTO>((command, picture));
+            }
 
             _unitOfWork.ChatRepository.CreateChat(chat);
             _unitOfWork.UserRepository.UpdateUserChats(chat.CreatedByUserId, chat.Id, true, true);
 
-            foreach (var chatUser in chat.ChatUsersId)
-            {
-                _unitOfWork.UserRepository.UpdateUserChats(chatUser, chat.Id, false, true);
-            }
-
             await _unitOfWork.CommitAsync();
 
-            var result = await _unitOfWork.ChatRepository.GetAggregateChatWithUsers(chat);
+            var chatWithUsersDTO = await _unitOfWork.ChatRepository.GetAggregateChatWithUsers(chat);
+
+            var chatUsers = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<User>>(chatWithUsersDTO.ChatUsers);
+            var result = _mapper.Map<(ChatWithUsersDTO, IEnumerable<User>), Chat>((chatWithUsersDTO, chatUsers));
 
             return result;
         }

@@ -1,5 +1,4 @@
 ﻿using ChatApp.Core.DTO;
-using ChatApp.Core.Entities;
 using ChatApp.Interfaces.Repositories;
 using ChatApp.Persistence.Context;
 using MongoDB.Bson;
@@ -18,39 +17,40 @@ namespace ChatApp.Persistence.Repositories
             _db = context;
         }
 
-        public async Task<Chat> GetAggregateChatWithUsers(ChatDTO chat)
+        public async Task<ChatDTO> GetChatById(ObjectId chatId)
         {
-            var result = await _db.Chats.Aggregate().Match(ch => ch.Id == chat.Id)
-                .Lookup<ChatDTO, UserDTO, Chat>(_db.Users, ch => ch.CreatedByUserId, us => us.Id, ch => ch.CreatedByUser)
-                .Lookup<Chat, UserDTO, Chat>(_db.Users, ch => ch.ChatUsersId, us => us.Id, ch => ch.ChatUsers)
-                .FirstOrDefaultAsync();
-
-            return result;
+            return await _db.Chats.Find(ch => ch.Id == chatId).FirstOrDefaultAsync();
         }
 
-        public async Task<Chat> GetAggregateChatWithUsers(ObjectId chatId)
+        public async Task<ChatWithUsersDTO> GetAggregateChatWithUsers(ChatDTO chat)
         {
-            var result = await _db.Chats.Aggregate().Match(ch => ch.Id == chatId)
-                .Lookup<ChatDTO, UserDTO, Chat>(_db.Users, ch => ch.CreatedByUserId, us => us.Id, ch => ch.CreatedByUser)
-                .Lookup<Chat, UserDTO, Chat>(_db.Users, ch => ch.ChatUsersId, us => us.Id, ch => ch.ChatUsers)
+            //.Lookup<ChatDTO, UserDTO, Chat>(_db.Users, ch => ch.CreatedByUserId, us => us.Id, ch => ch.CreatedByUser)
+            return await _db.Chats.Aggregate().Match(ch => ch.Id == chat.Id)
+                .Lookup<ChatDTO, UserDTO, ChatWithUsersDTO>(_db.Users, ch => ch.ChatUsersId, us => us.Id, ch => ch.ChatUsers)
                 .FirstOrDefaultAsync();
-
-            return result;
         }
 
-        public async Task<Chat> SearchChatByName(string name)
+        public async Task<ChatWithUsersDTO> GetAggregateChatWithUsers(ObjectId chatId)
         {
-            var result = await _db.Chats.Aggregate().Match(ch => ch.Name == name)
-                .Lookup<ChatDTO, UserDTO, Chat>(_db.Users, ch => ch.CreatedByUserId, us => us.Id, ch => ch.CreatedByUser)
-                .Lookup<Chat, UserDTO, Chat>(_db.Users, ch => ch.ChatUsersId, us => us.Id, ch => ch.ChatUsers)
+            return await _db.Chats.Aggregate().Match(ch => ch.Id == chatId)
+                .Lookup<ChatDTO, UserDTO, ChatWithUsersDTO>(_db.Users, ch => ch.ChatUsersId, us => us.Id, ch => ch.ChatUsers)
                 .FirstOrDefaultAsync();
+        }
 
-            return result;
+        public async Task<ChatWithUsersDTO> SearchChatByName(string name)
+        {
+            return await _db.Chats.Aggregate().Match(ch => ch.Name == name)
+                .Lookup<ChatDTO, UserDTO, ChatWithUsersDTO>(_db.Users, ch => ch.ChatUsersId, us => us.Id, ch => ch.ChatUsers)
+                .FirstOrDefaultAsync();
         }
 
         public void CreateChat(ChatDTO chat)
         {
-            _db.AddCommand(async () => await _db.Chats.InsertOneAsync(chat));
+            _db.AddCommand(async () =>
+                {
+                    chat.ChatUsersId.Add(chat.CreatedByUserId);
+                    await _db.Chats.InsertOneAsync(chat); 
+                });
         }
 
         public void UpdateChat(ChatDTO chat)
@@ -83,15 +83,13 @@ namespace ChatApp.Persistence.Repositories
         public void AddUserToChatAsync(ObjectId chatId, ObjectId userId)
         {
             _db.AddCommand(async () => await _db.Chats.FindOneAndUpdateAsync(Builders<ChatDTO>.Filter.Eq("_id", chatId),
-                Builders<ChatDTO>.Update.Push("ChatUsersId", userId),
-                new FindOneAndUpdateOptions<ChatDTO, ChatDTO> { ReturnDocument = ReturnDocument.After }));
+                Builders<ChatDTO>.Update.Push("ChatUsersId", userId)));
         }
 
         public void DeleteUserFromChatAsync(ObjectId chatId, ObjectId userId)
         {
             _db.AddCommand(async () => await _db.Chats.FindOneAndUpdateAsync(Builders<ChatDTO>.Filter.Eq("_id", chatId),
-                Builders<ChatDTO>.Update.Pull("ChatUsersId", userId),
-                new FindOneAndUpdateOptions<ChatDTO, ChatDTO> { ReturnDocument = ReturnDocument.After }));
+                Builders<ChatDTO>.Update.Pull("ChatUsersId", userId)));
         }
 
         public void Dispose()

@@ -1,5 +1,4 @@
 ﻿using ChatApp.Core.DTO;
-using ChatApp.Core.Entities;
 using ChatApp.Core.Enums;
 using MongoDB.Bson;
 using System;
@@ -12,7 +11,7 @@ namespace ChatApp.Interfaces.Repositories
     {
         Task<IEnumerable<UserDTO>> GetAllUsers();
 
-        Task<User> GetAllChatsForUser(ObjectId id);
+        Task<UserWithChatsDTO> GetAllChatsForUser(ObjectId id);
 
         Task<IEnumerable<UserDTO>> SearchUserByName(string name);
 

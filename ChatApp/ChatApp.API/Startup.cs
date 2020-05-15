@@ -56,8 +56,9 @@ namespace ChatApp.API
                .AddGoogle(options =>
                {
                    options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                   options.ClientId = "158339939419-r3gh8lgsd3dp7nl1kihedga6q44080gk.apps.googleusercontent.com";
-                   options.ClientSecret = "UrHalybWKgGiIooMBJzXMFVV";                    options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
+                   options.ClientId = Configuration.GetSection("GoogleAuth:ClientId").Value;
+                   options.ClientSecret = Configuration.GetSection("GoogleAuth:ClientSecret").Value;
+                   options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
                });
 
             services.AddMediatR(AppDomain.CurrentDomain.Load("ChatApp.CQRS"));
