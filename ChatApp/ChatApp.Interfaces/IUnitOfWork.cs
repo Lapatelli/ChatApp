@@ -1,5 +1,6 @@
 ﻿using ChatApp.Interfaces.Repositories;
 using System;
+using System.Threading.Tasks;
 
 namespace ChatApp.Interfaces
 {
@@ -9,6 +10,6 @@ namespace ChatApp.Interfaces
 
         public IChatRepository ChatRepository { get; set; }
 
-        //Task<int> CommitAsync();
+        Task<int> CommitAsync();
     }
 }

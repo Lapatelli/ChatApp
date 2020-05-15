@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using Microsoft.AspNetCore.Http;
+using System.Drawing;
 using System.IO;
 using System.Net;
 
@@ -23,6 +24,16 @@ namespace ChatApp.CQRS.Shared
                         }
                     }
                 }
+            }
+        }
+
+        public static byte[] PictureToByteArray(IFormFile picture)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                picture.CopyTo(ms);
+
+                return ms.ToArray();
             }
         }
     }

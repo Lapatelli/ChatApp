@@ -11,6 +11,7 @@ namespace ChatApp.CQRS.Commands.Users
             UserStatus = userStatus;
             EmailAddress = emailAddress;
         }
+
         public UserStatus UserStatus { get; set; }
         public string EmailAddress { get; set; }
     }

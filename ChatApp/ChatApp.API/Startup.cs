@@ -17,8 +17,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using System;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace ChatApp.API
 {
@@ -44,25 +42,23 @@ namespace ChatApp.API
             services.AddControllers();
 
             services.AddAuthentication(options =>
-                 {
-                     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                     options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-                     options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                 })
-                .AddCookie(options =>
-                    {
-                        options.LoginPath = new PathString("/Account/google-login");
-                        options.Cookie.HttpOnly = true;
-                    }
-                )
-                .AddGoogle(options =>
                 {
-                    options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                    options.ClientId = "158339939419-r3gh8lgsd3dp7nl1kihedga6q44080gk.apps.googleusercontent.com";
-                    options.ClientSecret = "UrHalybWKgGiIooMBJzXMFVV";
-                    options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
-                    //options.ClaimActions.MapJsonKey(ClaimTypes.MobilePhone, "mobilephone", "string");
-                });
+                    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                    options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                })
+               .AddCookie(options =>
+                   {
+                       options.LoginPath = new PathString("/Account/google-login");
+                       options.Cookie.HttpOnly = true;
+                   }
+               )
+               .AddGoogle(options =>
+               {
+                   options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                   options.ClientId = "158339939419-r3gh8lgsd3dp7nl1kihedga6q44080gk.apps.googleusercontent.com";
+                   options.ClientSecret = "UrHalybWKgGiIooMBJzXMFVV";                    options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
+               });
 
             services.AddMediatR(AppDomain.CurrentDomain.Load("ChatApp.CQRS"));
 

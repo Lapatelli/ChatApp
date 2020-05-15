@@ -4,7 +4,7 @@ using ChatApp.Interfaces.Repositories;
 using ChatApp.Persistence.Context;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System.Collections.Generic;
+using System;
 using System.Threading.Tasks;
 
 namespace ChatApp.Persistence.Repositories
@@ -18,64 +18,85 @@ namespace ChatApp.Persistence.Repositories
             _db = context;
         }
 
-        public async Task<ChatDTO> CreateChatAsync(ChatDTO chat)
+        public async Task<Chat> GetAggregateChatWithUsers(ChatDTO chat)
         {
-            await _db.Chats.InsertOneAsync(chat);
-
-            return chat;
-        }
-
-        public async Task<ChatDTO> SearchChatByName(string name)
-        {
-
-            ChatsWithUsers result = await _db.Chats.Aggregate().Match(ch => ch.Name == name).Lookup<ChatDTO, UserDTO, ChatsWithUsers>(
-                _db.Users,
-                ch => ch.ChatUsers,
-                us => us.Id,
-                ch => ch.ChatUsersFull)
+            var result = await _db.Chats.Aggregate().Match(ch => ch.Id == chat.Id)
+                .Lookup<ChatDTO, UserDTO, Chat>(_db.Users, ch => ch.CreatedByUserId, us => us.Id, ch => ch.CreatedByUser)
+                .Lookup<Chat, UserDTO, Chat>(_db.Users, ch => ch.ChatUsersId, us => us.Id, ch => ch.ChatUsers)
                 .FirstOrDefaultAsync();
 
-            return await _db.Chats.Find(ch => ch.Name == name).FirstOrDefaultAsync();
+            return result;
         }
 
-        public async Task DeleteChatAsync(ObjectId chatId)
+        public async Task<Chat> GetAggregateChatWithUsers(ObjectId chatId)
         {
-            await _db.Chats.DeleteOneAsync(new BsonDocument("_id", chatId));
+            var result = await _db.Chats.Aggregate().Match(ch => ch.Id == chatId)
+                .Lookup<ChatDTO, UserDTO, Chat>(_db.Users, ch => ch.CreatedByUserId, us => us.Id, ch => ch.CreatedByUser)
+                .Lookup<Chat, UserDTO, Chat>(_db.Users, ch => ch.ChatUsersId, us => us.Id, ch => ch.ChatUsers)
+                .FirstOrDefaultAsync();
+
+            return result;
         }
 
-        public async Task<ChatDTO> DeleteUserFromChatAsync(ObjectId chatId, ObjectId userId)
+        public async Task<Chat> SearchChatByName(string name)
         {
-            var chatDb = await _db.Chats.Find(ch => ch.Id == chatId).FirstOrDefaultAsync();
+            var result = await _db.Chats.Aggregate().Match(ch => ch.Name == name)
+                .Lookup<ChatDTO, UserDTO, Chat>(_db.Users, ch => ch.CreatedByUserId, us => us.Id, ch => ch.CreatedByUser)
+                .Lookup<Chat, UserDTO, Chat>(_db.Users, ch => ch.ChatUsersId, us => us.Id, ch => ch.ChatUsers)
+                .FirstOrDefaultAsync();
 
-            chatDb.ChatUsers.Remove(userId);
-
-            await _db.Chats.ReplaceOneAsync(new BsonDocument("_id", chatId), chatDb);
-
-            return chatDb;
+            return result;
         }
 
-        public async Task<ChatDTO> AddUserToChatAsync(ObjectId chatId, ObjectId userId)
+        public void CreateChat(ChatDTO chat)
         {
-            var chatDb = await _db.Chats.Find(ch => ch.Id == chatId).FirstOrDefaultAsync();
-
-            chatDb.ChatUsers.Add(userId);
-
-            await _db.Chats.ReplaceOneAsync(new BsonDocument("_id", chatId), chatDb);
-
-            return chatDb;
+            _db.AddCommand(async () => await _db.Chats.InsertOneAsync(chat));
         }
 
-        public async Task<ChatDTO> UpdateChatAsync(ChatDTO chat)
+        public void UpdateChat(ChatDTO chat)
         {
-            var chatDb = await _db.Chats.Find(ch => ch.Id == chat.Id).FirstOrDefaultAsync();
+            _db.AddCommand(async () =>
+            {
+                if (chat.Name != null)
+                    await _db.Chats.UpdateOneAsync(Builders<ChatDTO>.Filter.Eq("_id", chat.Id), Builders<ChatDTO>.Update.Set("Name", chat.Name));
 
-            chatDb.Name = chat.Name ?? chatDb.Name;
-            chatDb.Password = chat.Password ?? chatDb.Password;
-            chatDb.ChatPrivacy = chat.ChatPrivacy ?? chatDb.ChatPrivacy;
+                if (chat.Password != null)
+                    await _db.Chats.UpdateOneAsync(Builders<ChatDTO>.Filter.Eq("_id", chat.Id), Builders<ChatDTO>.Update.Set("Password", chat.Password));
 
-            await _db.Chats.ReplaceOneAsync(new BsonDocument("_id", chat.Id), chatDb);
+                if (chat.ChatPrivacy != null)
+                    await _db.Chats.UpdateOneAsync(Builders<ChatDTO>.Filter.Eq("_id", chat.Id), Builders<ChatDTO>.Update.Set("ChatPrivacy", chat.ChatPrivacy));
 
-            return chatDb;
+                if (chat.ChatUsersId != null)
+                    await _db.Chats.UpdateOneAsync(Builders<ChatDTO>.Filter.Eq("_id", chat.Id), Builders<ChatDTO>.Update.PushEach("ChatUsersId", chat.ChatUsersId));
+
+                if (chat.Picture != null)
+                    await _db.Chats.UpdateOneAsync(Builders<ChatDTO>.Filter.Eq("_id", chat.Id), Builders<ChatDTO>.Update.Set("Picture", chat.Picture));
+
+            });
+        }
+
+        public void DeleteChatAsync(ObjectId chatId)
+        {
+            _db.AddCommand(async () => await _db.Chats.DeleteOneAsync(new BsonDocument("_id", chatId)));
+        }
+
+        public void AddUserToChatAsync(ObjectId chatId, ObjectId userId)
+        {
+            _db.AddCommand(async () => await _db.Chats.FindOneAndUpdateAsync(Builders<ChatDTO>.Filter.Eq("_id", chatId),
+                Builders<ChatDTO>.Update.Push("ChatUsersId", userId),
+                new FindOneAndUpdateOptions<ChatDTO, ChatDTO> { ReturnDocument = ReturnDocument.After }));
+        }
+
+        public void DeleteUserFromChatAsync(ObjectId chatId, ObjectId userId)
+        {
+            _db.AddCommand(async () => await _db.Chats.FindOneAndUpdateAsync(Builders<ChatDTO>.Filter.Eq("_id", chatId),
+                Builders<ChatDTO>.Update.Pull("ChatUsersId", userId),
+                new FindOneAndUpdateOptions<ChatDTO, ChatDTO> { ReturnDocument = ReturnDocument.After }));
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
         }
     }
 }

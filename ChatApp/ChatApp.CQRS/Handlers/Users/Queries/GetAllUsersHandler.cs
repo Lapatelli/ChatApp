@@ -20,7 +20,8 @@ namespace ChatApp.CQRS.Handlers.Users.Queries
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<IEnumerable<User>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
+
+        public async Task<IEnumerable<User>> Handle(GetAllUsersQuery query, CancellationToken cancellationToken)
         {
             var users = await _unitOfWork.UserRepository.GetAllUsers();
             var result = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<User>>(users);

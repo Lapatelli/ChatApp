@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using ChatApp.API.ViewModels.User;
+using ChatApp.Core.Enums;
+using System.Collections.Generic;
 
 namespace ChatApp.API.ViewModels.Chat
 {
@@ -7,7 +9,8 @@ namespace ChatApp.API.ViewModels.Chat
         public string Id { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
-        public Core.Entities.User CreatedBy { get; set; }
-        public IEnumerable<Core.Entities.User> ChatUsers { get; set; }
+        public ChatPrivacy? ChatPrivacy { get; set; }
+        public byte[] Picture { get; set; }
+        public IEnumerable<UserInfoViewModel> ChatUsers { get; set; }
     }
 }

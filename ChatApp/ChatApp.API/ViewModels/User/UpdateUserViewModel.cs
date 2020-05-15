@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿
+using Microsoft.AspNetCore.Http;
 
 namespace ChatApp.API.ViewModels.User
 {
@@ -7,6 +8,6 @@ namespace ChatApp.API.ViewModels.User
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string EmailAddress { get; set; }
-        public string TelephoneNumber { get; set; }
+        public IFormFile Photo { get; set; }
     }
 }

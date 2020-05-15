@@ -2,8 +2,7 @@
 using ChatApp.Core.DTO;
 using ChatApp.Core.Entities;
 using ChatApp.CQRS.Commands.Chats;
-using ChatApp.CQRS.Commands.Users;
-using ChatApp.CQRS.Queries.Users;
+using ChatApp.CQRS.Shared;
 using ChatApp.Interfaces;
 using MediatR;
 using MongoDB.Bson;
@@ -16,39 +15,37 @@ namespace ChatApp.CQRS.Handlers.Chats.Commands
     public class CreateChatHandler : IRequestHandler<CreateChatCommand, Chat>
     {
         private readonly IMapper _mapper;
-        private readonly IMediator _mediator;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreateChatHandler(IUnitOfWork unitOfWork, IMediator mediator, IMapper mapper)
+        public CreateChatHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
-            _mediator = mediator;
             _mapper = mapper;
         }
 
         public async Task<Chat> Handle(CreateChatCommand command, CancellationToken cancellationToken)
         {
             List<ObjectId> chatUsersObjectId = new List<ObjectId>();
-            List<User> usersChat = new List<User>();
 
             foreach (var chatUserObjectId in command.ChatUsers)
             {
                 chatUsersObjectId.Add(ObjectId.Parse(chatUserObjectId));
             }
 
-            var chat = _mapper.Map<(CreateChatCommand, IEnumerable<ObjectId>), ChatDTO>((command, chatUsersObjectId));
+            var picture = command.Picture != null ? ImageConvertion.PictureToByteArray(command.Picture): null;
+            var chat = _mapper.Map<(CreateChatCommand, List<ObjectId>, byte[]), ChatDTO>((command, chatUsersObjectId, picture));
 
-            var chatCreated = await _unitOfWork.ChatRepository.CreateChatAsync(chat);
+            _unitOfWork.ChatRepository.CreateChat(chat);
+            _unitOfWork.UserRepository.UpdateUserChats(chat.CreatedByUserId, chat.Id, true, true);
 
-            var userCreator = await _mediator.Send(new UpdateUserCommand(chatCreated.CreatedByUser, chatCreated.Id));
-
-            foreach (var chatUsers in chatCreated.ChatUsers)
+            foreach (var chatUser in chat.ChatUsersId)
             {
-                usersChat.Add(await _mediator.Send(new GetUserByIdQuery(chatUsers.ToString())));
-                await _mediator.Send(new UpdateUserCommand(chatUsers, null, chatCreated.Id));
+                _unitOfWork.UserRepository.UpdateUserChats(chatUser, chat.Id, false, true);
             }
 
-            var result = _mapper.Map<(ChatDTO, User, IEnumerable<User>), Chat>((chatCreated, userCreator, usersChat));
+            await _unitOfWork.CommitAsync();
+
+            var result = await _unitOfWork.ChatRepository.GetAggregateChatWithUsers(chat);
 
             return result;
         }

@@ -26,8 +26,11 @@ namespace ChatApp.CQRS.Handlers.Users.Commands
             var photo = ImageConvertion.ImageToByteArray(command.Photo);
 
             var userCreateDTO = _mapper.Map<RegisterUserCommand, UserDTO>(command);
-            var user = await _unitOfWork.UserRepository.CreateUser(userCreateDTO, photo);
+            _unitOfWork.UserRepository.CreateUser(userCreateDTO, photo);
 
+            await _unitOfWork.CommitAsync();
+
+            var user = await _unitOfWork.UserRepository.SearchUserById(command.Id);
             var result = _mapper.Map<UserDTO, User>(user);
 
             return result;

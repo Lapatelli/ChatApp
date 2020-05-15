@@ -20,14 +20,11 @@ namespace ChatApp.Core.DTO
         [BsonElement("EmailAddress")]
         public string EmailAddress { get; set; }
 
-        [BsonElement("TelephoneNumber")]
-        public string TelephoneNumber { get; set; }
+        [BsonElement("CreatedChatsId")]
+        public List<ObjectId> CreatedChatsId { get; set; }
 
-        [BsonElement("CreatedChats")]
-        public List<ObjectId> CreatedChats { get; set; }
-
-        [BsonElement("Chats")]
-        public List<ObjectId> Chats { get; set; }
+        [BsonElement("ChatsId")]
+        public List<ObjectId> ChatsId { get; set; }
 
         [BsonElement("UserStatus")]
         public UserStatus UserStatus { get; set; }

@@ -20,6 +20,7 @@ namespace ChatApp.CQRS.Handlers.Users.Queries
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+
         public async Task<IEnumerable<User>> Handle(GetUserByNameQuery query, CancellationToken cancellationToken)
         {
             var users = await _unitOfWork.UserRepository.SearchUserByName(query.Name);

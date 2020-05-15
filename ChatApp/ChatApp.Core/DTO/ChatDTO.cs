@@ -22,14 +22,14 @@ namespace ChatApp.Core.DTO
         [BsonRepresentation(BsonType.DateTime)]
         public DateTime? CreatedAt { get; set; }
 
-        [BsonElement("CreatedBy")]
-        public ObjectId CreatedByUser { get; set; }
+        [BsonElement("CreatedByUserId")]
+        public ObjectId CreatedByUserId { get; set; }
 
         [BsonElement("ChatPrivacy")]
         public ChatPrivacy? ChatPrivacy { get; set; }
 
-        [BsonElement("ChatUsers")]
-        public List<ObjectId> ChatUsers { get; set; }
+        [BsonElement("ChatUsersId")]
+        public List<ObjectId> ChatUsersId { get; set; }
 
         [BsonElement("Picture")]
         public byte[] Picture { get; set; }

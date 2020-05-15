@@ -1,6 +1,7 @@
 ﻿using ChatApp.Core.Entities;
 using ChatApp.Core.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,6 @@ namespace ChatApp.CQRS.Commands.Chats
         public string CreatedByUser { get; set; }
         public ChatPrivacy ChatPrivacy { get; set; }
         public List<string> ChatUsers { get; set; }
-
-        //add Picture property
+        public IFormFile Picture { get; set; }
     }
 }

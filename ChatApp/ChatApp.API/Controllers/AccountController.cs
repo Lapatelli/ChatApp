@@ -1,6 +1,8 @@
-﻿using System.Net.Http;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Threading.Tasks;
+using AutoMapper;
+using ChatApp.API.ViewModels.User;
+using ChatApp.Core.Entities;
 using ChatApp.Core.Enums;
 using ChatApp.CQRS.Commands.Users;
 using ChatApp.CQRS.Queries.Users;
@@ -18,11 +20,24 @@ namespace ChatApp.API.Controllers
     [AllowAnonymous]
     public class AccountController : ControllerBase
     {
+        private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public AccountController(IMediator mediator)
+        public AccountController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
+            _mapper = mapper;
+        }
+
+        [HttpPost("register")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RegisterAsync([FromBody] RegisterViewModel model)
+        {
+            var user = await _mediator.Send(new RegisterUserCommand(model.FirstName, model.LastName, model.EmailAddress, model.Photo));
+
+            var result = _mapper.Map<User, UserViewModel>(user);
+
+            return Ok(result);
         }
 
         [HttpGet]
@@ -54,10 +69,9 @@ namespace ChatApp.API.Controllers
             {
                 string firstName = authenticateResult.Principal.FindFirstValue(ClaimTypes.GivenName);
                 string lastName = authenticateResult.Principal.FindFirstValue(ClaimTypes.Surname);
-                string telephoneNumber = authenticateResult.Principal.FindFirstValue(ClaimTypes.HomePhone);
                 string photo = authenticateResult.Principal.FindFirstValue("urn:google:picture");
 
-                await _mediator.Send(new RegisterUserCommand(firstName, lastName, email, telephoneNumber, photo));
+                await _mediator.Send(new RegisterUserCommand(firstName, lastName, email, photo));
             }
 
             await _mediator.Send(new SetUserStatusCommand(email, UserStatus.Online));
