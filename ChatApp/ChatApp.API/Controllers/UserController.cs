@@ -29,6 +29,7 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpGet("allusers")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllUsersAsync()
         {
             var users = await _mediator.Send(new GetAllUsersQuery());

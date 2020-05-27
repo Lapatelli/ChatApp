@@ -73,7 +73,7 @@ namespace ChatApp.API.Controllers
 
             await _mediator.Send(new SetUserStatusCommand(email, UserStatus.Online));
 
-            return LocalRedirect(returnUrl);
+            return Redirect("http://localhost:4200");
         }
 
         [HttpPost("logout")]

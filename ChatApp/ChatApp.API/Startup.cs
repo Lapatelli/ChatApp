@@ -65,6 +65,8 @@ namespace ChatApp.API
 
             services.AddAutoMapper(typeof(Startup));
 
+            services.AddCors();
+
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -82,6 +84,11 @@ namespace ChatApp.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(builder =>
+                builder.WithOrigins("http://localhost:4200")
+                .AllowAnyHeader()
+                .AllowAnyMethod());
 
             app.UseRouting();
 
