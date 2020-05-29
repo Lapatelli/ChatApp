@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Chat } from 'src/app/shared/Chat';
 
 @Component({
   selector: 'app-chat-dashboard',
@@ -7,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ChatDashboardComponent implements OnInit {
 
+  public selectedChat: Chat = null;
   public listToggler: boolean = true;
 
   constructor() { }
@@ -16,5 +18,9 @@ export class ChatDashboardComponent implements OnInit {
 
   onToggleList(panel: boolean) {
     this.listToggler = panel;
+  }
+
+  selectChat(chat: Chat) {
+    this.selectedChat = chat;
   }
 }

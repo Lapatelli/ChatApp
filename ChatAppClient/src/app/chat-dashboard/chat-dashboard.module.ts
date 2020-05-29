@@ -7,9 +7,11 @@ import { ChatService } from '../services/chat.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UsersComponent } from './users/users.component';
-import { ModalContainerComponent } from './modal-container.component';
+import { CreateChatContainerComponent } from './create-chat/create-chat-container.component';
 import { CreateChatComponent } from './create-chat/create-chat.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ChatProfileComponent } from './chat-profile/chat-profile.component';
+import { ChatProfileContainerComponent } from './chat-profile/chat-profile-container.component';
 
 
 @NgModule({
@@ -17,8 +19,10 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     ChatDashboardComponent,
     ChatsComponent,
     UsersComponent,
-    ModalContainerComponent,
-    CreateChatComponent
+    CreateChatContainerComponent,
+    ChatProfileContainerComponent,
+    CreateChatComponent,
+    ChatProfileComponent
   ],
   imports: [
     CommonModule,

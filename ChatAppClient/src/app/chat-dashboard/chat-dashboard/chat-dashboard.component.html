@@ -1,6 +1,7 @@
 <div class="chat-dashboard">
     <div id="chat-container">
         <div id="profile-container">
+            <img src="./../../../assets/user-profile.png">
         </div>
         <div id="conversation-list">
             <div class="chat-user-navigation">
@@ -8,7 +9,7 @@
                 <h2 type="text" (click)='onToggleList(false)' >Users</h2>
             </div>
             <div [hidden]="!listToggler">
-                <app-chats></app-chats>
+                <app-chats (selectChat)="selectChat($event)"></app-chats>
             </div>
             <div [hidden]="listToggler">
                 <app-users></app-users>
@@ -18,7 +19,12 @@
             <a routerLink="createchat">+</a>
         </div>
         <div id="chat-title">
-            <span>Chat Title</span>           
+            <div *ngIf="selectedChat; else showDefaultTitle">
+                <a [routerLink]="'chat/' + selectedChat.id">{{selectedChat.name}}</a>
+            </div>
+            <ng-template #showDefaultTitle>
+                <span>Chat Title</span>
+            </ng-template>           
         </div>
         <div id=chat-message-list>
             <div class="message-row your-message">

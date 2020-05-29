@@ -1,0 +1,39 @@
+<div class="modal-chat-container">
+    <form [formGroup]="editChatFormModel" autocomplete="off" (submit)="onUpdateChat()">
+          <div class="form-group col-sm-9">
+          <label>Name</label>
+          <input class="form-control" formControlName="Name">
+          </div>
+          <div class="form-group col-sm-9">
+            <label>ChatPrivacy</label>
+            <div class="dropdown">
+              <div class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{dropDownMenuName}}
+              </div>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <div class="dropdown-item" *ngFor="let privacy of privacyArray" (click)="onSelectPrivacy(privacy.value)">{{privacy.name}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group col-sm-9" *ngIf = "chatPrivacyStatus === 1">
+          <label>Password</label>
+          <input type="password" class="form-control" formControlName="Password">
+          </div>
+          <div class="form-group col-sm-9">
+          <label>Picture</label>
+          <div class="input-group mb-3">
+            <div class="custom-file">
+              <input type="file" class="custom-file-input" id="inputGroupFile01" (change)="onFileSelected($event)">
+              <label class="custom-file-label" for="inputGroupFile01">{{selectedFileName}}</label>
+            </div>
+          </div>
+          </div>
+          <div class="form-group col-sm-9">
+          <label>Users</label>
+          <input class="form-control" formControlName="Users">
+          </div>
+          <div class="form-group col-sm-9">
+            <button type="submit" class="btn btn-outline-dark margin-button">Update</button>
+          </div>
+  </form>
+</div>

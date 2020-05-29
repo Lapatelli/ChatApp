@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
 import { ChatService } from 'src/app/services/chat.service';
 import { Observable } from 'rxjs';
@@ -13,6 +13,8 @@ import { CHAT_PRIVACY } from 'src/app/shared/ChatPrivacy';
   styleUrls: ['./chats.component.scss']
 })
 export class ChatsComponent implements OnInit {
+
+  @Output() selectChat = new EventEmitter<Chat>();
 
   public chats$: Observable<Chat[]>;
   public allChats: Chat[] = new Array<Chat>();
@@ -35,4 +37,7 @@ export class ChatsComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustUrl(ObjectURL);
   }
 
+  onSelectChat( chat: Chat ) {
+    this.selectChat.emit(chat);
+  }
 }

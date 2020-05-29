@@ -5,6 +5,10 @@
     border: none;
 }
 
+a { 
+    text-decoration: none; 
+}
+
 .chat-dashboard {
     display: grid;
     place-items: center;
@@ -34,10 +38,21 @@
 }
 
 #profile-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
     grid-area: profile-container;
     border-radius: 10px 0 0 0;
     box-shadow: 0 1px 3px -1px rgba(0,0,0,0.75);
     z-index: 1;
+}
+
+#profile-container img {
+    height: 40px;
+    width: 40px;
+    border-radius: 100%;
 }
 
 #conversation-list {
@@ -72,7 +87,7 @@
     padding: 0 20px;
 }
 
-#chat-title span {
+#chat-title span, a {
     color: #89A586;
     font-weight: bold;
     font-size: 1.5rem;

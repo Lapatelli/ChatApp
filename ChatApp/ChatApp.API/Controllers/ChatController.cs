@@ -10,7 +10,6 @@ using ChatApp.CQRS.Queries.Chats;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatApp.API.Controllers
@@ -39,7 +38,19 @@ namespace ChatApp.API.Controllers
 
             return Ok(result);
         }
-        
+
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CreateChatByIdAsync(string id)
+        {
+            var chat = await _mediator.Send(new GetChatByIdQuery(id));
+
+            var chatUsers = _mapper.Map<IEnumerable<User>, IEnumerable<UserInfoViewModel>>(chat.ChatUsers);
+            var result = _mapper.Map<(Chat, IEnumerable<UserInfoViewModel>), ChatViewModel>((chat, chatUsers));
+
+            return Ok(result);
+        }
+
         [HttpPost("create", Name = "CreateChat")]
         [AllowAnonymous]
         public async Task<IActionResult> CreateChatAsync([FromForm]CreateChatViewModel createChatViewModel,[FromQuery] string userId)
@@ -54,6 +65,7 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpPut("{chatId}/update")]
+        [AllowAnonymous]
         public async Task<IActionResult> UpdateChatAsync([FromForm] UpdateChatViewModel model, [FromRoute] string chatId)
         {
             var updateChatCommand = _mapper.Map<(UpdateChatViewModel, string), UpdateChatCommand>((model, chatId));

@@ -33,5 +33,6 @@ namespace ChatApp.Core.DTO
 
         [BsonElement("Picture")]
         public byte[] Picture { get; set; }
+        //public IEnumerable<UserDTO> ChatUsers { get; set; }
     }
 }

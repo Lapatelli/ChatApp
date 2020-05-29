@@ -22,9 +22,15 @@ namespace ChatApp.Persistence.Repositories
             return await _db.Chats.Find(ch => ch.Id == chatId).FirstOrDefaultAsync();
         }
 
+        public async Task<ChatWithUsersDTO> GetChatByIdWithUsers(ObjectId chatId)
+        {
+            return await _db.Chats.Aggregate().Match(ch => ch.Id == chatId)
+                .Lookup<ChatDTO, UserDTO, ChatWithUsersDTO>(_db.Users, ch => ch.ChatUsersId, us => us.Id, ch => ch.ChatUsers)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<ChatWithUsersDTO> GetAggregateChatWithUsers(ChatDTO chat)
         {
-            //.Lookup<ChatDTO, UserDTO, Chat>(_db.Users, ch => ch.CreatedByUserId, us => us.Id, ch => ch.CreatedByUser)
             return await _db.Chats.Aggregate().Match(ch => ch.Id == chat.Id)
                 .Lookup<ChatDTO, UserDTO, ChatWithUsersDTO>(_db.Users, ch => ch.ChatUsersId, us => us.Id, ch => ch.ChatUsers)
                 .FirstOrDefaultAsync();

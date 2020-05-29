@@ -9,6 +9,8 @@ namespace ChatApp.Interfaces.Repositories
     {
         Task<ChatDTO> GetChatById(ObjectId chatId);
 
+        Task<ChatWithUsersDTO> GetChatByIdWithUsers(ObjectId chatId);
+
         Task<ChatWithUsersDTO> GetAggregateChatWithUsers(ChatDTO chat);
 
         Task<ChatWithUsersDTO> GetAggregateChatWithUsers(ObjectId chatId);

@@ -3,13 +3,13 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { CreateChatComponent } from './create-chat/create-chat.component';
+import { CreateChatComponent } from './create-chat.component';
 
 @Component({
   selector: 'app-modal-container',
   template: ''
 })
-export class ModalContainerComponent implements OnDestroy {
+export class CreateChatContainerComponent implements OnDestroy {
   destroy = new Subject<any>();
   currentDialog = null;
 
