@@ -12,6 +12,6 @@ export class AuthService {
   constructor(@Inject(DOCUMENT) private document: Document, private httpClient: HttpClient) { }
 
   public loginGoogle() {
-    this.document.location.href = URLs.BaseUrl + 'account/google-login';
+    this.document.location.href = URLs.AccountUrl + 'google-login';
   }
 }

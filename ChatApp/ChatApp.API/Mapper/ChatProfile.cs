@@ -24,7 +24,7 @@ namespace ChatApp.API.Mapper
                     CreatedByUser = src.creator,
                     ChatPrivacy = src.model.ChatPrivacy,
                     ChatUsers = src.model.ChatUsers,
-                    Picture =src.model.Picture
+                    Picture = src.model.Picture
                 });
 
             CreateMap<(DeleteUserFromChatViewModel model, string chatId), DeleteUserFromChatCommand>()

@@ -39,6 +39,7 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpGet("allchats")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllChatsForUserAsync([FromRoute]string userId)
         {
             var user = await _mediator.Send(new GetAllChatsForUserQuery(userId));
@@ -46,7 +47,7 @@ namespace ChatApp.API.Controllers
             var userChats = _mapper.Map<IEnumerable<Chat>, IEnumerable<ChatInfoViewModel>>(user.Chats);
             var result = _mapper.Map<(User, IEnumerable<ChatInfoViewModel>), UserViewModel>((user, userChats));
 
-            return Ok(result);
+            return Ok(result.Chats);
         }
 
         [HttpGet("search/{userName}")]

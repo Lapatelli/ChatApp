@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using ChatApp.API.ViewModels.Chat;
@@ -9,6 +10,7 @@ using ChatApp.CQRS.Queries.Chats;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatApp.API.Controllers
@@ -39,6 +41,7 @@ namespace ChatApp.API.Controllers
         }
         
         [HttpPost("create", Name = "CreateChat")]
+        [AllowAnonymous]
         public async Task<IActionResult> CreateChatAsync([FromForm]CreateChatViewModel createChatViewModel,[FromQuery] string userId)
         {
             var chatCreationCommand = _mapper.Map<(CreateChatViewModel, string), CreateChatCommand>((createChatViewModel, userId));
