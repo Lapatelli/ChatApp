@@ -1,0 +1,28 @@
+<div class="modal-chat-container">
+    <form [formGroup]="userFormModel" autocomplete="off" (submit)="onUpdateUser()">
+        <div class="form-group col-sm-9">
+            <label>FirstName</label>
+            <input class="form-control" formControlName="FirstName">
+        </div>
+        <div class="form-group col-sm-9">
+            <label>LastName</label>
+            <input class="form-control" formControlName="LastName">
+        </div>
+        <div class="form-group col-sm-9">
+            <label>Email Address</label>
+            <input class="form-control" formControlName="EmailAddress">
+        </div>
+        <div class="form-group col-sm-9">
+            <label>Picture</label>
+            <div class="input-group mb-3">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="inputGroupFile01" (change)="onFileSelected($event)">
+                    <label class="custom-file-label" for="inputGroupFile01">{{selectedFileName}}</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-sm-9">
+            <button type="submit" class="btn btn-outline-dark margin-button">Update</button>
+        </div>
+  </form>
+</div>

@@ -41,6 +41,7 @@ namespace ChatApp.API.Mapper
                     Id = src.command.Id,
                     FirstName = src.command.FirstName,
                     LastName = src.command.LastName,
+                    UserStatus = Core.Enums.UserStatus.Online,
                     EmailAddress = src.command.EmailAddress,
                     BytePhoto = src.photo
                 });

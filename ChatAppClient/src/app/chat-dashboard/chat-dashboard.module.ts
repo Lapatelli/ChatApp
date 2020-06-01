@@ -12,6 +12,9 @@ import { CreateChatComponent } from './create-chat/create-chat.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ChatProfileComponent } from './chat-profile/chat-profile.component';
 import { ChatProfileContainerComponent } from './chat-profile/chat-profile-container.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { UserService } from '../services/user.service';
+import { UserProfileContainerComponent } from './user-profile/user-profile-container.component';
 
 
 @NgModule({
@@ -21,8 +24,10 @@ import { ChatProfileContainerComponent } from './chat-profile/chat-profile-conta
     UsersComponent,
     CreateChatContainerComponent,
     ChatProfileContainerComponent,
+    UserProfileContainerComponent,
     CreateChatComponent,
-    ChatProfileComponent
+    ChatProfileComponent,
+    UserProfileComponent
   ],
   imports: [
     CommonModule,
@@ -33,7 +38,8 @@ import { ChatProfileContainerComponent } from './chat-profile/chat-profile-conta
     NgbModule
   ],
   providers: [
-    ChatService
+    ChatService,
+    UserService
   ],
   bootstrap: [
     ChatDashboardComponent

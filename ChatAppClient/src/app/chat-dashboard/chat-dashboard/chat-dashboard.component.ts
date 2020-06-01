@@ -9,7 +9,8 @@ import { Chat } from 'src/app/shared/Chat';
 export class ChatDashboardComponent implements OnInit {
 
   public selectedChat: Chat = null;
-  public listToggler: boolean = true;
+  public listToggler = true;
+  public userProfile = '5ebebb2b67f12f5c20faba8e';
 
   constructor() { }
 

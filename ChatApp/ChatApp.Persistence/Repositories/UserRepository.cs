@@ -66,6 +66,7 @@ namespace ChatApp.Persistence.Repositories
                 user.FirstName = user.FirstName ?? userDb.FirstName;
                 user.LastName = user.LastName ?? userDb.LastName;
                 user.EmailAddress = user.EmailAddress ?? userDb.EmailAddress;
+                user.UserStatus = userDb.UserStatus;
                 user.Photo = user.Photo ?? userDb.Photo;
                 user.BytePhoto = user.BytePhoto ?? userDb.BytePhoto;
                 user.CreatedChatsId = userDb.CreatedChatsId;

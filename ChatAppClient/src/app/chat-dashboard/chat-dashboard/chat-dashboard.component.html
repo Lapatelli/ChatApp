@@ -1,7 +1,9 @@
 <div class="chat-dashboard">
     <div id="chat-container">
         <div id="profile-container">
-            <img src="./../../../assets/user-profile.png">
+            <a [routerLink]="'user/' + userProfile">
+                <img src="./../../../assets/user-profile.png">
+            </a>
         </div>
         <div id="conversation-list">
             <div class="chat-user-navigation">

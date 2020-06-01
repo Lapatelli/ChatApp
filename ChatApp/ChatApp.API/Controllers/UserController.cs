@@ -28,6 +28,16 @@ namespace ChatApp.API.Controllers
             _mediator = mediator;
         }
 
+        [HttpGet("profile")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetUserByIdAsync([FromRoute]string userId)
+        {
+            var user = await _mediator.Send(new GetUserByIdQuery(userId));
+            var result = _mapper.Map<User, UserInfoViewModel>(user);
+
+            return Ok(result);
+        }
+
         [HttpGet("allusers")]
         [AllowAnonymous]
         public async Task<IActionResult> GetAllUsersAsync()
@@ -59,7 +69,8 @@ namespace ChatApp.API.Controllers
             return Ok(result);
         }
 
-        [HttpPut("")]
+        [HttpPut("update")]
+        [AllowAnonymous]
         public async Task<IActionResult> UpdateUserAsync([FromRoute] string userId, [FromForm] UpdateUserViewModel updateUserViewModel)
         {
             var userUpdateCommand = _mapper.Map<(UpdateUserViewModel, string), UpdateUserCommand>((updateUserViewModel, userId));
