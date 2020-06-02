@@ -1,4 +1,4 @@
-import { CHAT_PRIVACY } from './ChatPrivacy';
+import { CHAT_PRIVACY } from './CHAT_PRIVACY';
 import { User } from './User';
 
 export class ChatWithUsers {
@@ -7,6 +7,6 @@ export class ChatWithUsers {
     public password: string;
     public chatPrivacy: CHAT_PRIVACY;
     public picture: any;
-    public users: User[];
+    public chatUsers: User[];
     public pictureUrl: any;
 }

@@ -31,3 +31,35 @@ label {
     box-shadow: none;
     outline: none;
 }
+
+.users-container {
+    display: flex;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    border-top: 1px solid #649665;
+    flex-direction: column;
+    width: 100%;
+}
+
+.users-list {
+    display: flex;
+    padding: 0.5em;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.users-list img {
+    height: 40px;
+    width: 40px;
+    border-radius: 100%;
+}
+
+.users-list div {
+    padding-right: 15px;
+}
+
+.user-status-style {
+    padding-left: 5px;
+    color: white;
+    white-space: nowrap;
+}

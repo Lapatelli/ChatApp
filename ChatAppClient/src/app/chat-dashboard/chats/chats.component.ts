@@ -5,7 +5,7 @@ import { ChatService } from 'src/app/services/chat.service';
 import { Observable } from 'rxjs';
 import { Chat } from 'src/app/shared/Chat';
 import { DomSanitizer } from '@angular/platform-browser';
-import { CHAT_PRIVACY } from 'src/app/shared/ChatPrivacy';
+import { CHAT_PRIVACY } from 'src/app/shared/CHAT_PRIVACY';
 
 @Component({
   selector: 'app-chats',

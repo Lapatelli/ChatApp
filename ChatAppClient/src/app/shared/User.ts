@@ -1,4 +1,4 @@
-import { USER_STATUS } from './UserStatus';
+import { USER_STATUS } from './USER_STATUS';
 
 export class User {
     public id: string;

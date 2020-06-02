@@ -1,10 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ICreateChat } from 'src/app/shared/Chat-create';
-import { CHAT_PRIVACY } from 'src/app/shared/ChatPrivacy';
+import { ICreateChat } from 'src/app/shared/ICreateChat';
+import { CHAT_PRIVACY } from 'src/app/shared/CHAT_PRIVACY';
 import { ChatService } from 'src/app/services/chat.service';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChatWithUsers } from 'src/app/shared/ChatWithUsers';
+import { User } from 'src/app/shared/User';
+import { DomSanitizer } from '@angular/platform-browser';
+import { USER_STATUS } from 'src/app/shared/USER_STATUS';
 
 @Component({
   selector: 'app-chat-profile',
@@ -17,19 +20,20 @@ export class ChatProfileComponent implements OnInit {
   public chatId: string;
 
   public chatWithUsers = new ChatWithUsers();
-  public editChatFormModel = this.fb.group({
-    Name: [''],
-    ChatPrivacy: [''],
-    Password: [''],
-    Users: ['']
-  });
   public privacyArray: Array<any>;
   public dropDownMenuName = 'Choose Chat Privacy';
   public chatPrivacyStatus: any;
   public selectedFile: File = null;
   public selectedFileName = 'Select File';
 
-  constructor(private router: Router, private service: ChatService, private fb: FormBuilder, private route: ActivatedRoute) {
+  public editChatFormModel = this.fb.group({
+    Name: [''],
+    ChatPrivacy: [''],
+    Password: ['']
+  });
+
+  constructor(private router: Router, private service: ChatService, private fb: FormBuilder, private route: ActivatedRoute,
+              private sanitizer: DomSanitizer) {
    }
 
   ngOnInit(): void {
@@ -43,6 +47,10 @@ export class ChatProfileComponent implements OnInit {
         this.onSelectPrivacy(result.chatPrivacy);
 
         this.chatWithUsers = result;
+        this.chatWithUsers.chatUsers.forEach((user: User) => {
+          user.photoUrl = this.RenderChatPictures(user.bytePhoto);
+          user.userStatusString = USER_STATUS[user.userStatus];
+        });
         this.onChatFormInitilalize(this.chatWithUsers);
       }));
   }
@@ -51,8 +59,13 @@ export class ChatProfileComponent implements OnInit {
     this.editChatFormModel = this.fb.group({
       Name: [chat.name],
       Password: [chat.password],
-      Users: [chat.users]
+      Users: [chat.chatUsers]
     });
+  }
+
+  RenderChatPictures(photoUser: any): any {
+    const ObjectURL = 'data:image/jpeg;base64,' + photoUser;
+    return this.sanitizer.bypassSecurityTrustUrl(ObjectURL);
   }
 
   onFileSelected(event) {
@@ -74,7 +87,6 @@ export class ChatProfileComponent implements OnInit {
     formData.append('name', this.editChatFormModel.value.Name);
     formData.append('chatPrivacy', this.chatPrivacyStatus);
     formData.append('password', this.editChatFormModel.value.Password);
-    // formData.append('chatUsers', '5ebeba1863e2f91e7028d20c');
 
     this.service.updateChat(this.chatWithUsers.id, formData)
       .subscribe((res: any) => {

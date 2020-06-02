@@ -5,7 +5,7 @@ import { FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/shared/User';
-import { USER_STATUS } from 'src/app/shared/UserStatus';
+import { USER_STATUS } from 'src/app/shared/USER_STATUS';
 
 @Component({
   selector: 'app-users',

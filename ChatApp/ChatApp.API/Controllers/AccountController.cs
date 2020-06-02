@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using ChatApp.API.ViewModels.User;
@@ -64,6 +65,7 @@ namespace ChatApp.API.Controllers
 
             if (!isUserExist)
             {
+                var userGoogleId = authenticateResult.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
                 var firstName = authenticateResult.Principal.FindFirstValue(ClaimTypes.GivenName);
                 var lastName = authenticateResult.Principal.FindFirstValue(ClaimTypes.Surname);
                 var photo = authenticateResult.Principal.FindFirstValue("urn:google:picture");

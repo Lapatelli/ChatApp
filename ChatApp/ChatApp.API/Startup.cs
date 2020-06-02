@@ -1,4 +1,5 @@
 using AutoMapper;
+using ChatApp.Infrastructure.SignalR.Hubs;
 using ChatApp.Interfaces;
 using ChatApp.Interfaces.Repositories;
 using ChatApp.Persistence;
@@ -8,15 +9,20 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ChatApp.API
 {
@@ -48,10 +54,12 @@ namespace ChatApp.API
                     options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 })
                .AddCookie(options =>
-                   {
-                       options.LoginPath = new PathString("/Account/google-login");
-                       options.Cookie.HttpOnly = true;
-                   }
+               {
+                   options.Cookie.Name = "UserCookieAuth";
+                   options.Cookie.MaxAge = TimeSpan.FromHours(1);
+                   options.LoginPath = new PathString("/Account/google-login");
+                   options.Cookie.HttpOnly = true;
+               }
                )
                .AddGoogle(options =>
                {
@@ -59,6 +67,7 @@ namespace ChatApp.API
                    options.ClientId = Configuration.GetSection("GoogleAuth:ClientId").Value;
                    options.ClientSecret = Configuration.GetSection("GoogleAuth:ClientSecret").Value;
                    options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
+                   options.SaveTokens = true;
                });
 
             services.AddMediatR(AppDomain.CurrentDomain.Load("ChatApp.CQRS"));
@@ -75,6 +84,8 @@ namespace ChatApp.API
                     Title = "Chat Api"
                 });
             });
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -88,7 +99,8 @@ namespace ChatApp.API
             app.UseCors(builder =>
                 builder.WithOrigins("http://localhost:4200")
                 .AllowAnyHeader()
-                .AllowAnyMethod());
+                .AllowAnyMethod()
+                .AllowCredentials());
 
             app.UseRouting();
 
@@ -104,6 +116,8 @@ namespace ChatApp.API
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=home}/{action=index}/{id?}");
+
+                endpoints.MapHub<ChatHub>("/chat-hub");
             });
 
             app.UseSwagger();

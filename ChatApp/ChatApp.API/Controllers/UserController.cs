@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using ChatApp.API.ViewModels.Chat;
@@ -6,10 +9,13 @@ using ChatApp.API.ViewModels.User;
 using ChatApp.Core.Entities;
 using ChatApp.CQRS.Commands.Users;
 using ChatApp.CQRS.Queries.Users;
+using ChatApp.Infrastructure.SignalR.Hubs;
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace ChatApp.API.Controllers
 {
@@ -21,17 +27,21 @@ namespace ChatApp.API.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
+        private readonly IHubContext<ChatHub> _hubContext;
 
-        public UserController(IMapper mapper, IMediator mediator)
+
+        public UserController(IMapper mapper, IMediator mediator, IHubContext<ChatHub> hubContext)
         {
             _mapper = mapper;
             _mediator = mediator;
+            _hubContext = hubContext;
         }
 
         [HttpGet("profile")]
-        [AllowAnonymous]
         public async Task<IActionResult> GetUserByIdAsync([FromRoute]string userId)
         {
+            var authenticateResult = HttpContext.AuthenticateAsync().Result.Principal.FindFirstValue(ClaimTypes.Email);
+
             var user = await _mediator.Send(new GetUserByIdQuery(userId));
             var result = _mapper.Map<User, UserInfoViewModel>(user);
 
@@ -39,7 +49,6 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpGet("allusers")]
-        [AllowAnonymous]
         public async Task<IActionResult> GetAllUsersAsync()
         {
             var users = await _mediator.Send(new GetAllUsersQuery());
@@ -49,7 +58,6 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpGet("allchats")]
-        [AllowAnonymous]
         public async Task<IActionResult> GetAllChatsForUserAsync([FromRoute]string userId)
         {
             var user = await _mediator.Send(new GetAllChatsForUserQuery(userId));
@@ -70,7 +78,6 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpPut("update")]
-        [AllowAnonymous]
         public async Task<IActionResult> UpdateUserAsync([FromRoute] string userId, [FromForm] UpdateUserViewModel updateUserViewModel)
         {
             var userUpdateCommand = _mapper.Map<(UpdateUserViewModel, string), UpdateUserCommand>((updateUserViewModel, userId));

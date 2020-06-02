@@ -7,10 +7,12 @@ using ChatApp.API.ViewModels.User;
 using ChatApp.Core.Entities;
 using ChatApp.CQRS.Commands.Chats;
 using ChatApp.CQRS.Queries.Chats;
+using ChatApp.Infrastructure.SignalR.Hubs;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace ChatApp.API.Controllers
 {
@@ -21,11 +23,13 @@ namespace ChatApp.API.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
+        private readonly IHubContext<ChatHub> _hubContext;
 
-        public ChatController(IMapper mapper, IMediator mediator)
+        public ChatController(IMapper mapper, IMediator mediator, IHubContext<ChatHub> hubContext)
         {
             _mapper = mapper;
             _mediator = mediator;
+            _hubContext = hubContext;
         }
 
         [HttpGet("search/{chatName}")]

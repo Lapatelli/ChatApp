@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ChatService } from 'src/app/services/chat.service';
 import { FormBuilder } from '@angular/forms';
-import { CHAT_PRIVACY } from 'src/app/shared/ChatPrivacy';
+import { CHAT_PRIVACY } from 'src/app/shared/CHAT_PRIVACY';
 import { ChatWithUsers } from 'src/app/shared/ChatWithUsers';
 import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/app/shared/User';

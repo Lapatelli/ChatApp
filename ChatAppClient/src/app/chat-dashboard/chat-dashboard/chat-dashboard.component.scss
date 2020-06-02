@@ -194,7 +194,7 @@ a {
     padding-right: 22px;
 }
 
-#chat-form img {
+.chat-form-image {
     width: 120%;
 	height: 50%;
 }
@@ -231,12 +231,6 @@ a {
 	font-size: 15px;
 	font-weight: 500;
 }
-
-// .chat-user-navigation h2.active {
-// 	position: relative;
-// 	color: #00FF5C;
-// 	font-weight: 700;
-// }
 
 .chat-user-navigation:hover {
     cursor: pointer;

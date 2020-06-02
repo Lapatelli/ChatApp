@@ -1,4 +1,4 @@
-import { CHAT_PRIVACY } from './ChatPrivacy';
+import { CHAT_PRIVACY } from './CHAT_PRIVACY';
 
 export interface ICreateChat {
     name: string;

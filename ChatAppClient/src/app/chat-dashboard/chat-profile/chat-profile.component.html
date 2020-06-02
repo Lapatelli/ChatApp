@@ -28,9 +28,17 @@
             </div>
           </div>
           </div>
-          <div class="form-group col-sm-9">
-          <label>Users</label>
-          <input class="form-control" formControlName="Users">
+          <div class="users-container col-sm-12">
+            <label>Users</label>
+            <div class="users-list" *ngFor="let user of chatWithUsers.chatUsers">
+              <div>
+                <img [src]="user.photoUrl" alt="UserPhoto">
+              </div>
+              <div>
+                <div>{{user.lastName}} {{user.firstName}}</div>
+                <div class="user-status-style">{{user.userStatusString}}</div>
+              </div>
+            </div>
           </div>
           <div class="form-group col-sm-9">
             <button type="submit" class="btn btn-outline-dark margin-button">Update</button>

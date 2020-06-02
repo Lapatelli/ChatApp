@@ -28,25 +28,31 @@
                 <span>Chat Title</span>
             </ng-template>           
         </div>
-        <div id=chat-message-list>
-            <div class="message-row your-message">
-                <div class="message-content">
-                    <div class="message-text">Hello</div>
-                    <div class="message-time">May 27</div>
+        <div id="chat-message-list">
+            <div *ngFor="let message of chatMessageStorage">
+                <div *ngIf="message.userId === userProfile; else showOtherMessage">
+                    <div class="message-row your-message">
+                        <div class="message-content">
+                            <div class="message-text">{{message.content}}</div>
+                            <div class="message-time">{{message.time}}</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="message-row other-message">
-                <div class="message-content">
-                    <img src="../../../assets/Maks_BW.jpg" alt="Vlada">
-                    <div class="message-text">Hello</div>
-                    <div class="message-time">May 27</div>
-                </div>
+                <ng-template #showOtherMessage>
+                    <div class="message-row other-message">
+                        <div class="message-content">
+                            <img src="../../../assets/Maks_BW.jpg" alt="Vlada">
+                            <div class="message-text">{{message.content}}</div>
+                            <div class="message-time">{{message.time}}</div>
+                        </div>
+                    </div>
+                </ng-template>
             </div>
         </div>
-        <div id="chat-form">
-            <img src="../../../assets/send-msg.png">
-            <input type="text" placeholder="type a message">
-        </div>
+        <form id="chat-form" (submit)="onSendMessage(inputMessage)">
+            <input type="image" class="chat-form-image" src="../../../assets/send-msg.png" alt="Submit">
+            <input type="text" class="form-control" placeholder="type a message" [(ngModel)]="inputMessage" name="inputMessage">
+        </form>
     </div>
 </div>
 <router-outlet></router-outlet>
