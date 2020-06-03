@@ -49,7 +49,8 @@ a {
     z-index: 1;
 }
 
-#profile-container img {
+#profile-container img,
+#chat-title img {
     height: 40px;
     width: 40px;
     border-radius: 100%;
@@ -182,7 +183,7 @@ a {
 
 #chat-form {
     display: grid;
-    grid: 51px / 32px 1fr;
+    grid: 51px / 1fr 32px;
     align-content: center;
     align-items: center;
     grid-gap: 15px;
@@ -196,7 +197,8 @@ a {
 
 .chat-form-image {
     width: 120%;
-	height: 50%;
+    height: 50%;
+    background: #0A0A0A;
 }
 
 #chat-form input {
@@ -232,6 +234,7 @@ a {
 	font-weight: 500;
 }
 
+#chat-title img:hover,
 .chat-user-navigation:hover {
     cursor: pointer;
 }

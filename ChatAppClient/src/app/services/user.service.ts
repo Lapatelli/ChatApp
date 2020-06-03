@@ -12,11 +12,15 @@ export class UserService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public getUserById(userId: string): Observable<User> {
-    return this.httpClient.get<User>(URLs.UserUrl + userId + '/profile',  {withCredentials: true});
+  public getUserById(): Observable<User> {
+    return this.httpClient.get<User>(URLs.UserUrl + 'profile',  {withCredentials: true});
   }
 
-  public updateChat(userId: string, file: FormData): Observable<any> {
-    return this.httpClient.put<any>(URLs.UserUrl + userId + '/update', file,  {withCredentials: true});
+  public getUser(): Observable<string> {
+    return this.httpClient.get<string>(URLs.UserUrl + 'email',  {withCredentials: true});
+  }
+
+  public updateChat(file: FormData): Observable<any> {
+    return this.httpClient.put<any>(URLs.UserUrl + 'update', file,  {withCredentials: true});
   }
 }

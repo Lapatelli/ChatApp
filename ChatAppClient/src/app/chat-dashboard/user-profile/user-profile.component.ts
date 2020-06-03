@@ -14,14 +14,10 @@ import { User } from 'src/app/shared/User';
 })
 export class UserProfileComponent implements OnInit {
 
-  @Input()
-  public userId: string;
-
   public user = new User();
   public userFormModel = this.fb.group({
     FirstName: [''],
     LastName: [''],
-    EmailAddress: ['']
   });
   public selectedFile: File = null;
   public selectedFileName = 'Select File';
@@ -30,7 +26,7 @@ export class UserProfileComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    this.service.getUserById(this.userId)
+    this.service.getUserById()
       .subscribe(((result: User) => {
 
         this.user = result;
@@ -42,7 +38,6 @@ export class UserProfileComponent implements OnInit {
     this.userFormModel = this.fb.group({
       FirstName: [userProfile.firstName],
       LastName: [userProfile.lastName],
-      EmailAddress: [userProfile.emailAddress]
     });
   }
 
@@ -58,9 +53,8 @@ export class UserProfileComponent implements OnInit {
     }
     formData.append('firstname', this.userFormModel.value.FirstName);
     formData.append('lastname', this.userFormModel.value.LastName);
-    formData.append('emailaddress', this.userFormModel.value.EmailAddress);
 
-    this.service.updateChat(this.user.id, formData)
+    this.service.updateChat(formData)
       .subscribe((res: any) => {
         this.router.navigateByUrl('/main');
       });

@@ -1,5 +1,6 @@
 export class ChatMessage {
     public content: string;
     public time: string;
-    public userId: string;
+    public email: string;
+    public photo: string;
 }

@@ -14,7 +14,7 @@ namespace ChatApp.API.Mapper
     {
         public ChatProfile()
         {
-            CreateMap<(CreateChatViewModel model, string creator), CreateChatCommand>()
+            CreateMap<(CreateChatViewModel model, ObjectId creator), CreateChatCommand>()
                 .ConvertUsing(src => new CreateChatCommand
                 {
                     Id = ObjectId.GenerateNewId(),
@@ -59,7 +59,7 @@ namespace ChatApp.API.Mapper
                     Name = src.command.Name,
                     Password = src.command.Password,
                     CreatedAt = src.command.CreatedAt,
-                    CreatedByUserId = ObjectId.Parse(src.command.CreatedByUser),
+                    CreatedByUserId = src.command.CreatedByUser,
                     ChatPrivacy = src.command.ChatPrivacy,
                     ChatUsersId = src.chatUsers,
                     Picture = src.picture
@@ -72,7 +72,7 @@ namespace ChatApp.API.Mapper
                     Name = src.command.Name,
                     Password = src.command.Password,
                     CreatedAt = src.command.CreatedAt,
-                    CreatedByUserId = ObjectId.Parse(src.command.CreatedByUser),
+                    CreatedByUserId = src.command.CreatedByUser,
                     ChatPrivacy = src.command.ChatPrivacy,
                     Picture = src.picture
                 });

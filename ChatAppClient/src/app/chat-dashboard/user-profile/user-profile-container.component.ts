@@ -16,7 +16,6 @@ export class UserProfileContainerComponent implements OnDestroy {
   constructor(private modalService: NgbModal, route: ActivatedRoute, router: Router) {
     route.paramMap.pipe(takeUntil(this.destroy)).subscribe(params => {
       this.currentDialog = this.modalService.open(UserProfileComponent, {centered: true});
-      this.currentDialog.componentInstance.userId = params.get('id');
 
       this.currentDialog.result.then(result => {
         router.navigateByUrl('/main');

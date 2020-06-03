@@ -15,7 +15,7 @@ export class ChatService {
   constructor(private httpClient: HttpClient) { }
 
   public getChats(): Observable<Chat[]> {
-    return this.httpClient.get<Chat[]>(URLs.UserUrl + '5ebeba1863e2f91e7028d20c' + '/allchats', {withCredentials: true});
+    return this.httpClient.get<Chat[]>(URLs.UserUrl + 'allchats', {withCredentials: true});
   }
 
   public getChatById(chatId: string): Observable<ChatWithUsers> {
@@ -23,7 +23,7 @@ export class ChatService {
   }
 
   public getUsers(): Observable<User[]> {
-    return this.httpClient.get<User[]>(URLs.UserUrl + '5ebeba1863e2f91e7028d20c' + '/allusers',  {withCredentials: true});
+    return this.httpClient.get<User[]>(URLs.UserUrl + 'allusers',  {withCredentials: true});
   }
 
   public createChat(file: FormData): Observable<any> {

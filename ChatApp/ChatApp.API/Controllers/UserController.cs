@@ -11,7 +11,6 @@ using ChatApp.CQRS.Commands.Users;
 using ChatApp.CQRS.Queries.Users;
 using ChatApp.Infrastructure.SignalR.Hubs;
 using MediatR;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +19,7 @@ using Microsoft.AspNetCore.SignalR;
 namespace ChatApp.API.Controllers
 {
     [Produces("application/json")]
-    [Route("user/{userId}/")]
+    [Route("user/")]
     [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     [ApiController]
     public class UserController : ControllerBase
@@ -38,10 +37,27 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpGet("profile")]
+        public async Task<IActionResult> GetUserByEmailAsync()
+        {
+            var userEmail = HttpContext.User.FindFirstValue(ClaimTypes.Email);
+
+            var user = await _mediator.Send(new GetUserByEmailQuery(userEmail));
+            var result = _mapper.Map<User, UserInfoViewModel>(user);
+
+            return Ok(result);
+        }
+
+        [HttpGet("email")]
+        public async Task<IActionResult> GetUserEmailAsync()
+        {
+            var result = HttpContext.User.FindFirstValue(ClaimTypes.Email);
+
+            return Ok(result);
+        }
+
+        [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserByIdAsync([FromRoute]string userId)
         {
-            var authenticateResult = HttpContext.AuthenticateAsync().Result.Principal.FindFirstValue(ClaimTypes.Email);
-
             var user = await _mediator.Send(new GetUserByIdQuery(userId));
             var result = _mapper.Map<User, UserInfoViewModel>(user);
 
@@ -58,9 +74,11 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpGet("allchats")]
-        public async Task<IActionResult> GetAllChatsForUserAsync([FromRoute]string userId)
+        public async Task<IActionResult> GetAllChatsForUserAsync()
         {
-            var user = await _mediator.Send(new GetAllChatsForUserQuery(userId));
+            var userEmail = HttpContext.User.FindFirstValue(ClaimTypes.Email);
+
+            var user = await _mediator.Send(new GetAllChatsForUserQuery(userEmail));
 
             var userChats = _mapper.Map<IEnumerable<Chat>, IEnumerable<ChatInfoViewModel>>(user.Chats);
             var result = _mapper.Map<(User, IEnumerable<ChatInfoViewModel>), UserViewModel>((user, userChats));
@@ -78,9 +96,11 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateUserAsync([FromRoute] string userId, [FromForm] UpdateUserViewModel updateUserViewModel)
+        public async Task<IActionResult> UpdateUserAsync([FromForm] UpdateUserViewModel updateUserViewModel)
         {
-            var userUpdateCommand = _mapper.Map<(UpdateUserViewModel, string), UpdateUserCommand>((updateUserViewModel, userId));
+            var userEmail = HttpContext.User.FindFirstValue(ClaimTypes.Email);
+
+            var userUpdateCommand = _mapper.Map<(UpdateUserViewModel, string), UpdateUserCommand>((updateUserViewModel, userEmail));
             var user = await _mediator.Send(userUpdateCommand);
 
             var result = _mapper.Map<User, UserViewModel>(user);
@@ -89,9 +109,11 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpPut("leavechat/{chatId}")]
-        public async Task<IActionResult> LeaveChatAsync([FromRoute] string userId, [FromRoute] string chatId)
+        public async Task<IActionResult> LeaveChatAsync([FromRoute] string chatId)
         {
-            var user = await _mediator.Send(new LeaveChatCommand(userId, chatId));
+            var userEmail = HttpContext.User.FindFirstValue(ClaimTypes.Email);
+
+            var user = await _mediator.Send(new LeaveChatCommand(userEmail, chatId));
 
             var result = _mapper.Map<User, UserViewModel>(user);
 

@@ -14,4 +14,9 @@ export class AuthService {
   public loginGoogle() {
     this.document.location.href = URLs.AccountUrl + 'google-login';
   }
+
+  public logOut() {
+    this.document.location.href = URLs.AccountUrl + 'logout';
+    // return this.httpClient.get(URLs.AccountUrl + 'logout', {withCredentials: true});
+  }
 }

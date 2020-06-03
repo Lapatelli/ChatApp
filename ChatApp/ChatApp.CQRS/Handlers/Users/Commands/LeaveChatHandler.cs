@@ -22,12 +22,14 @@ namespace ChatApp.CQRS.Handlers.Users.Commands
 
         public async Task<User> Handle(LeaveChatCommand command, CancellationToken cancellationToken)
         {
-            _unitOfWork.UserRepository.LeaveChat(command.UserId, command.ChatId);
-            _unitOfWork.ChatRepository.DeleteUserFromChatAsync(command.ChatId, command.UserId);
+            _unitOfWork.UserRepository.LeaveChat(command.Email, command.ChatId);
+            var user = await _unitOfWork.UserRepository.SearchUserByEmail(command.Email);
+            _unitOfWork.ChatRepository.DeleteUserFromChatAsync(command.ChatId, user.Id);
+
             await _unitOfWork.CommitAsync();
 
-            var user = await _unitOfWork.UserRepository.SearchUserById(command.UserId);
-            var result = _mapper.Map<UserDTO, User>(user);
+            var userUpdated = await _unitOfWork.UserRepository.SearchUserByEmail(command.Email);
+            var result = _mapper.Map<UserDTO, User>(userUpdated);
 
             return result;
         }

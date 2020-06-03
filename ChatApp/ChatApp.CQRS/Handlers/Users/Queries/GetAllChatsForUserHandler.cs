@@ -24,7 +24,7 @@ namespace ChatApp.CQRS.Handlers.Users.Queries
 
         public async Task<User> Handle(GetAllChatsForUserQuery query, CancellationToken cancellationToken)
         {
-            var userWithChatsDTO = await _unitOfWork.UserRepository.GetAllChatsForUser(ObjectId.Parse(query.Id));
+            var userWithChatsDTO = await _unitOfWork.UserRepository.GetAllChatsForUser(query.Email);
             var userWithChats = _mapper.Map<IEnumerable<ChatDTO>, IEnumerable<Chat>>(userWithChatsDTO.Chats);
             var result = _mapper.Map<(UserWithChatsDTO, IEnumerable<Chat>), User>((userWithChatsDTO , userWithChats));
 

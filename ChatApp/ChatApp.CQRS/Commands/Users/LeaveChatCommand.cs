@@ -6,13 +6,13 @@ namespace ChatApp.CQRS.Commands.Users
 {
     public class LeaveChatCommand : IRequest<User>
     {
-        public LeaveChatCommand(string userId, string chatId)
+        public LeaveChatCommand(string email, string chatId)
         {
-            UserId = ObjectId.Parse(userId);
+            Email = email;
             ChatId = ObjectId.Parse(chatId);
         }
 
-        public ObjectId UserId { get; set; }
+        public string Email { get; set; }
         public ObjectId ChatId { get; set; }
     }
 }

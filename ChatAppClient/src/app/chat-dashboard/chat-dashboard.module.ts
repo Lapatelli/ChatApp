@@ -15,6 +15,7 @@ import { ChatProfileContainerComponent } from './chat-profile/chat-profile-conta
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UserService } from '../services/user.service';
 import { UserProfileContainerComponent } from './user-profile/user-profile-container.component';
+import { AuthService } from '../services/auth.service';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { UserProfileContainerComponent } from './user-profile/user-profile-conta
   ],
   providers: [
     ChatService,
-    UserService
+    UserService,
+    AuthService
   ],
   bootstrap: [
     ChatDashboardComponent

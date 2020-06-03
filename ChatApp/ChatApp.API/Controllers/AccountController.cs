@@ -61,11 +61,10 @@ namespace ChatApp.API.Controllers
                 return BadRequest();
 
             var email = authenticateResult.Principal.FindFirstValue(ClaimTypes.Email);
-            var isUserExist = await _mediator.Send(new GetUserByEmailQuery(email));
+            var isUserExist = await _mediator.Send(new IsUserExistsQuery(email));
 
             if (!isUserExist)
             {
-                var userGoogleId = authenticateResult.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
                 var firstName = authenticateResult.Principal.FindFirstValue(ClaimTypes.GivenName);
                 var lastName = authenticateResult.Principal.FindFirstValue(ClaimTypes.Surname);
                 var photo = authenticateResult.Principal.FindFirstValue("urn:google:picture");
@@ -78,7 +77,7 @@ namespace ChatApp.API.Controllers
             return Redirect("http://localhost:4200/main");
         }
 
-        [HttpPost("logout")]
+        [HttpGet("logout")]
         public async Task<IActionResult> LogOut(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
@@ -86,9 +85,9 @@ namespace ChatApp.API.Controllers
             await _mediator.Send(new SetUserStatusCommand(HttpContext.User.FindFirstValue(ClaimTypes.Email), UserStatus.Offline));
 
             await HttpContext.SignOutAsync();
-            HttpContext.Response.Cookies.Delete(".AspNetCore.Cookies");
+            //HttpContext.Response.Cookies.Delete("UserCookieAuth");
 
-            return Ok(returnUrl);
+            return Redirect("http://localhost:4200/auth");
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using ChatApp.API.ViewModels.Chat;
@@ -7,12 +8,14 @@ using ChatApp.API.ViewModels.User;
 using ChatApp.Core.Entities;
 using ChatApp.CQRS.Commands.Chats;
 using ChatApp.CQRS.Queries.Chats;
+using ChatApp.CQRS.Queries.Users;
 using ChatApp.Infrastructure.SignalR.Hubs;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using MongoDB.Bson;
 
 namespace ChatApp.API.Controllers
 {
@@ -44,8 +47,7 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
-        public async Task<IActionResult> CreateChatByIdAsync(string id)
+        public async Task<IActionResult> GetChatByIdAsync(string id)
         {
             var chat = await _mediator.Send(new GetChatByIdQuery(id));
 
@@ -57,9 +59,12 @@ namespace ChatApp.API.Controllers
 
         [HttpPost("create", Name = "CreateChat")]
         [AllowAnonymous]
-        public async Task<IActionResult> CreateChatAsync([FromForm]CreateChatViewModel createChatViewModel,[FromQuery] string userId)
+        public async Task<IActionResult> CreateChatAsync([FromForm]CreateChatViewModel createChatViewModel)
         {
-            var chatCreationCommand = _mapper.Map<(CreateChatViewModel, string), CreateChatCommand>((createChatViewModel, userId));
+            var userEmail = HttpContext.User.FindFirstValue(ClaimTypes.Email);
+            var user = await _mediator.Send(new GetUserByEmailQuery(userEmail));
+
+            var chatCreationCommand = _mapper.Map<(CreateChatViewModel, ObjectId), CreateChatCommand>((createChatViewModel, user.Id));
             var chat = await _mediator.Send(chatCreationCommand);
 
             var chatUsers = _mapper.Map<IEnumerable<User>, IEnumerable<UserInfoViewModel>>(chat.ChatUsers);
