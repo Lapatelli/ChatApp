@@ -5,11 +5,11 @@ namespace ChatApp.CQRS.Queries.Users
 {
     public class GetAllChatsForUserQuery : IRequest<User>
     {
-        public GetAllChatsForUserQuery(string userId)
+        public GetAllChatsForUserQuery(string email)
         {
-            Id = userId;
+            Email = email;
         }
 
-        public string Id { get; set; }
+        public string Email { get; set; }
     }
 }

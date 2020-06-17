@@ -13,13 +13,12 @@ namespace ChatApp.API.Mapper
     {
         public UserProfile()
         {
-            CreateMap<(UpdateUserViewModel model, string userId), UpdateUserCommand>()
+            CreateMap<(UpdateUserViewModel model, string email), UpdateUserCommand>()
                 .ConvertUsing(src => new UpdateUserCommand
                 {
-                    Id = ObjectId.Parse(src.userId),
+                    EmailAddress = src.email,
                     FirstName = src.model.FirstName,
                     LastName = src.model.LastName,
-                    EmailAddress = src.model.EmailAddress,
                     Photo = src.model.Photo
                 });
 
@@ -38,9 +37,9 @@ namespace ChatApp.API.Mapper
             CreateMap<(UpdateUserCommand command, byte[] photo), UserDTO>()
                 .ConvertUsing(src => new UserDTO
                 {
-                    Id = src.command.Id,
                     FirstName = src.command.FirstName,
                     LastName = src.command.LastName,
+                    UserStatus = Core.Enums.UserStatus.Online,
                     EmailAddress = src.command.EmailAddress,
                     BytePhoto = src.photo
                 });

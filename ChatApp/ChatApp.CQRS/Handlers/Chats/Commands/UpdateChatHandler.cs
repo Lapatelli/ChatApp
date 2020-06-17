@@ -29,7 +29,8 @@ namespace ChatApp.CQRS.Handlers.Chats.Commands
             ChatDTO chatUpdate;
 
             //[FromForm] always make command.ChatUsers.Count = 1 (if even we don't give any info or long list new ChatUsers)
-            if (command.ChatUsers[0] != null)
+            //command.ChatUsers[0] != null
+            if (command.ChatUsers != null)
             {
                var chatUsersObjectId = new List<ObjectId>();
 

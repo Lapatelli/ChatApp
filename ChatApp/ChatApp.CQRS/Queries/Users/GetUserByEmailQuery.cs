@@ -1,8 +1,9 @@
-﻿using MediatR;
+﻿using ChatApp.Core.Entities;
+using MediatR;
 
 namespace ChatApp.CQRS.Queries.Users
 {
-    public class GetUserByEmailQuery : IRequest<bool>
+    public class GetUserByEmailQuery : IRequest<User>
     {
         public GetUserByEmailQuery(string email)
         {

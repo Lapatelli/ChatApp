@@ -11,7 +11,7 @@ namespace ChatApp.Interfaces.Repositories
     {
         Task<IEnumerable<UserDTO>> GetAllUsers();
 
-        Task<UserWithChatsDTO> GetAllChatsForUser(ObjectId id);
+        Task<UserWithChatsDTO> GetAllChatsForUser(string  email);
 
         Task<IEnumerable<UserDTO>> SearchUserByName(string name);
 
@@ -27,8 +27,8 @@ namespace ChatApp.Interfaces.Repositories
 
         void UpdateUserChats(ObjectId userId, ObjectId chatId, bool isChatCreator, bool isUserAddedToChat);
 
-        void UpdateUserStatus(string emailAddress, UserStatus userStatus);
+        void UpdateUserStatus(string email, UserStatus userStatus);
 
-        void LeaveChat(ObjectId userId, ObjectId chatId);
+        void LeaveChat(string email, ObjectId chatId);
     }
 }

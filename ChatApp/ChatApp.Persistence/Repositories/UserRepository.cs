@@ -24,9 +24,9 @@ namespace ChatApp.Persistence.Repositories
             return await _db.Users.Aggregate().SortByDescending(us => us.UserStatus).ThenBy(us => us.LastName).ToListAsync();
         }
 
-        public async Task<UserWithChatsDTO> GetAllChatsForUser(ObjectId id)
+        public async Task<UserWithChatsDTO> GetAllChatsForUser(string email)
         {
-            return await _db.Users.Aggregate().Match(us => us.Id == id)
+            return await _db.Users.Aggregate().Match(us => us.EmailAddress == email)
                 .Lookup<UserDTO, ChatDTO, UserWithChatsDTO>(_db.Chats, us => us.ChatsId, ch => ch.Id, us => us.Chats)
                 .FirstOrDefaultAsync();
         }
@@ -61,11 +61,12 @@ namespace ChatApp.Persistence.Repositories
         {
             _db.AddCommand(async () =>
             {
-                UserDTO userDb = await SearchUserById(user.Id);
+                UserDTO userDb = await SearchUserByEmail(user.EmailAddress);
 
+                user.Id = userDb.Id;
                 user.FirstName = user.FirstName ?? userDb.FirstName;
                 user.LastName = user.LastName ?? userDb.LastName;
-                user.EmailAddress = user.EmailAddress ?? userDb.EmailAddress;
+                user.UserStatus = userDb.UserStatus;
                 user.Photo = user.Photo ?? userDb.Photo;
                 user.BytePhoto = user.BytePhoto ?? userDb.BytePhoto;
                 user.CreatedChatsId = userDb.CreatedChatsId;
@@ -103,15 +104,15 @@ namespace ChatApp.Persistence.Repositories
             });
         }
 
-        public void UpdateUserStatus(string emailAddress, UserStatus userStatus)
+        public void UpdateUserStatus(string email, UserStatus userStatus)
         {
-            _db.AddCommand(async () => await _db.Users.FindOneAndUpdateAsync(Builders<UserDTO>.Filter.Eq("EmailAddress", emailAddress),
+            _db.AddCommand(async () => await _db.Users.FindOneAndUpdateAsync(Builders<UserDTO>.Filter.Eq("EmailAddress", email),
                 Builders<UserDTO>.Update.Set("UserStatus", userStatus)));
         }
 
-        public void LeaveChat(ObjectId userId, ObjectId chatId)
+        public void LeaveChat(string email, ObjectId chatId)
         {
-            _db.AddCommand(async () => await _db.Users.FindOneAndUpdateAsync(Builders<UserDTO>.Filter.Eq("_id", userId),
+            _db.AddCommand(async () => await _db.Users.FindOneAndUpdateAsync(Builders<UserDTO>.Filter.Eq("EmailAddress", email),
                 Builders<UserDTO>.Update.Pull("ChatsId", chatId)));
         }
 

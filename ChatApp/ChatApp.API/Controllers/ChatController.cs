@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using ChatApp.API.ViewModels.Chat;
@@ -6,10 +8,14 @@ using ChatApp.API.ViewModels.User;
 using ChatApp.Core.Entities;
 using ChatApp.CQRS.Commands.Chats;
 using ChatApp.CQRS.Queries.Chats;
+using ChatApp.CQRS.Queries.Users;
+using ChatApp.Infrastructure.SignalR.Hubs;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using MongoDB.Bson;
 
 namespace ChatApp.API.Controllers
 {
@@ -20,11 +26,13 @@ namespace ChatApp.API.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
+        private readonly IHubContext<ChatHub> _hubContext;
 
-        public ChatController(IMapper mapper, IMediator mediator)
+        public ChatController(IMapper mapper, IMediator mediator, IHubContext<ChatHub> hubContext)
         {
             _mapper = mapper;
             _mediator = mediator;
+            _hubContext = hubContext;
         }
 
         [HttpGet("search/{chatName}")]
@@ -37,11 +45,26 @@ namespace ChatApp.API.Controllers
 
             return Ok(result);
         }
-        
-        [HttpPost("create", Name = "CreateChat")]
-        public async Task<IActionResult> CreateChatAsync([FromForm]CreateChatViewModel createChatViewModel,[FromQuery] string userId)
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetChatByIdAsync(string id)
         {
-            var chatCreationCommand = _mapper.Map<(CreateChatViewModel, string), CreateChatCommand>((createChatViewModel, userId));
+            var chat = await _mediator.Send(new GetChatByIdQuery(id));
+
+            var chatUsers = _mapper.Map<IEnumerable<User>, IEnumerable<UserInfoViewModel>>(chat.ChatUsers);
+            var result = _mapper.Map<(Chat, IEnumerable<UserInfoViewModel>), ChatViewModel>((chat, chatUsers));
+
+            return Ok(result);
+        }
+
+        [HttpPost("create", Name = "CreateChat")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CreateChatAsync([FromForm]CreateChatViewModel createChatViewModel)
+        {
+            var userEmail = HttpContext.User.FindFirstValue(ClaimTypes.Email);
+            var user = await _mediator.Send(new GetUserByEmailQuery(userEmail));
+
+            var chatCreationCommand = _mapper.Map<(CreateChatViewModel, ObjectId), CreateChatCommand>((createChatViewModel, user.Id));
             var chat = await _mediator.Send(chatCreationCommand);
 
             var chatUsers = _mapper.Map<IEnumerable<User>, IEnumerable<UserInfoViewModel>>(chat.ChatUsers);
@@ -51,6 +74,7 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpPut("{chatId}/update")]
+        [AllowAnonymous]
         public async Task<IActionResult> UpdateChatAsync([FromForm] UpdateChatViewModel model, [FromRoute] string chatId)
         {
             var updateChatCommand = _mapper.Map<(UpdateChatViewModel, string), UpdateChatCommand>((model, chatId));

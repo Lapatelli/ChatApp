@@ -3,19 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29920.165
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.API", "ChatApp.API\ChatApp.API.csproj", "{F7404ADA-44A5-419A-9FC3-38B9111F4CB8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApp.API", "ChatApp.API\ChatApp.API.csproj", "{F7404ADA-44A5-419A-9FC3-38B9111F4CB8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{6C0E24F6-516D-434D-BA0F-164A8707A006}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistence", "Persistence", "{8CD8C378-D273-4856-8E3E-729C4C2E908D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Persistence", "ChatApp.Persistence\ChatApp.Persistence.csproj", "{9685364A-1DA6-44CC-82AB-8924648961D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApp.Persistence", "ChatApp.Persistence\ChatApp.Persistence.csproj", "{9685364A-1DA6-44CC-82AB-8924648961D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Core", "ChatApp.Core\ChatApp.Core.csproj", "{9E2FA927-B043-4D72-93C6-201E6C9D8BF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApp.Core", "ChatApp.Core\ChatApp.Core.csproj", "{9E2FA927-B043-4D72-93C6-201E6C9D8BF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Interfaces", "ChatApp.Interfaces\ChatApp.Interfaces.csproj", "{F76B6EB8-335D-488D-AE81-72CD61017EB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApp.Interfaces", "ChatApp.Interfaces\ChatApp.Interfaces.csproj", "{F76B6EB8-335D-488D-AE81-72CD61017EB1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.CQRS", "ChatApp.CQRS\ChatApp.CQRS.csproj", "{E86668F2-E334-4DCD-8CDF-54435D46E2E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatApp.CQRS", "ChatApp.CQRS\ChatApp.CQRS.csproj", "{E86668F2-E334-4DCD-8CDF-54435D46E2E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{57C024F6-014F-4253-B91F-9F46A53412D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Infrastructure", "ChatApp.Infrastructure\ChatApp.Infrastructure.csproj", "{9D40A26B-64A2-48D2-B6A5-7C06D18F6374}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +47,10 @@ Global
 		{E86668F2-E334-4DCD-8CDF-54435D46E2E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E86668F2-E334-4DCD-8CDF-54435D46E2E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E86668F2-E334-4DCD-8CDF-54435D46E2E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D40A26B-64A2-48D2-B6A5-7C06D18F6374}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D40A26B-64A2-48D2-B6A5-7C06D18F6374}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D40A26B-64A2-48D2-B6A5-7C06D18F6374}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D40A26B-64A2-48D2-B6A5-7C06D18F6374}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,6 +60,7 @@ Global
 		{9E2FA927-B043-4D72-93C6-201E6C9D8BF3} = {6C0E24F6-516D-434D-BA0F-164A8707A006}
 		{F76B6EB8-335D-488D-AE81-72CD61017EB1} = {6C0E24F6-516D-434D-BA0F-164A8707A006}
 		{E86668F2-E334-4DCD-8CDF-54435D46E2E8} = {6C0E24F6-516D-434D-BA0F-164A8707A006}
+		{9D40A26B-64A2-48D2-B6A5-7C06D18F6374} = {57C024F6-014F-4253-B91F-9F46A53412D1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {624F5AD9-C13E-462C-BA79-2375B692234E}

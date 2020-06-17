@@ -30,7 +30,7 @@ namespace ChatApp.CQRS.Handlers.Users.Commands
             _unitOfWork.UserRepository.UpdateUser(userUpdateDTO);
             await _unitOfWork.CommitAsync();
 
-            var user = await _unitOfWork.UserRepository.SearchUserById(command.Id);
+            var user = await _unitOfWork.UserRepository.SearchUserByEmail(command.EmailAddress);
             var result = _mapper.Map<UserDTO, User>(user);
 
             return result;

@@ -1,0 +1,56 @@
+.conversation label {
+    display: grid;
+    grid-template-columns: 40px 1fr max-content;
+    grid-column-gap: 10px;
+    color: #89A586;
+    background: #121212;
+    font-size: 1.0rem;
+    margin: 0px 0px 0px;
+    border-bottom: 1px solid #649665 ;
+    padding: 20px 20px 20px 15px;    
+}
+
+.conversation label.active,
+.conversation label:hover {
+    background: #649665 ;
+}
+
+.conversation:hover {
+    cursor: pointer;
+}
+
+.conversation label img {
+    grid-row: span 2;
+    height: 40px;
+    width: 100%;
+    border-radius: 100%;
+}
+
+.conversation input {
+    display: none;
+}
+
+.conversation input:checked + label {
+    background:  #426342;
+}
+
+.conversation-message {
+    grid-column: span 2;
+    padding-left: 5px;
+    color: rgb(187, 169, 169);
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+.title-text {
+    font-weight: bold;
+    padding-left: 5px;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+.created-date {
+    font-size: 1rem;
+}

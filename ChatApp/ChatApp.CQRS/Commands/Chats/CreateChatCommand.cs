@@ -14,7 +14,7 @@ namespace ChatApp.CQRS.Commands.Chats
         public string Name { get; set; }
         public string Password { get; set; }
         public DateTime? CreatedAt { get; set; }
-        public string CreatedByUser { get; set; }
+        public ObjectId CreatedByUser { get; set; }
         public ChatPrivacy ChatPrivacy { get; set; }
         public List<string> ChatUsers { get; set; }
         public IFormFile Picture { get; set; }

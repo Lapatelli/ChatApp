@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using ChatApp.API.ViewModels.User;
@@ -60,7 +61,7 @@ namespace ChatApp.API.Controllers
                 return BadRequest();
 
             var email = authenticateResult.Principal.FindFirstValue(ClaimTypes.Email);
-            var isUserExist = await _mediator.Send(new GetUserByEmailQuery(email));
+            var isUserExist = await _mediator.Send(new IsUserExistsQuery(email));
 
             if (!isUserExist)
             {
@@ -73,20 +74,18 @@ namespace ChatApp.API.Controllers
 
             await _mediator.Send(new SetUserStatusCommand(email, UserStatus.Online));
 
-            return LocalRedirect(returnUrl);
+            return Redirect("http://localhost:4200/main");
         }
 
-        [HttpPost("logout")]
-        public async Task<IActionResult> LogOut(string returnUrl = null)
+        [HttpGet("logout")]
+        public async Task<IActionResult> LogOut(string returnUrl = "~/")
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
-
             await _mediator.Send(new SetUserStatusCommand(HttpContext.User.FindFirstValue(ClaimTypes.Email), UserStatus.Offline));
 
             await HttpContext.SignOutAsync();
-            HttpContext.Response.Cookies.Delete(".AspNetCore.Cookies");
+            HttpContext.Response.Cookies.Delete("UserCookieAuth");
 
-            return Ok(returnUrl);
+            return Redirect("http://localhost:4200/auth");
         }
     }
 }

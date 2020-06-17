@@ -1,0 +1,52 @@
+.user {
+    display: grid;
+    grid-template-columns: 40px 1fr max-content;
+    grid-column-gap: 10px;
+    color: #89A586;
+    background: #121212;
+    font-size: 1.0rem;
+    border-bottom: 1px solid #649665 ;
+    padding: 20px 20px 20px 15px;    
+}
+
+.user.active,
+.user:hover {
+    background: #649665 ;
+}
+
+.user:hover {
+    cursor: pointer;
+}
+
+.user > img {
+    grid-row: span 2;
+    height: 40px;
+    width: 100%;
+    border-radius: 100%;
+}
+
+.user-message-online {
+    grid-column: span 2;
+    padding-left: 5px;
+    color: rgb(0, 255, 0);
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-message-offline {
+    grid-column: span 2;
+    padding-left: 5px;
+    color: gray;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+.title-text {
+    font-weight: bold;
+    padding-left: 5px;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}

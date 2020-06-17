@@ -1,4 +1,5 @@
 using AutoMapper;
+using ChatApp.Infrastructure.SignalR.Hubs;
 using ChatApp.Interfaces;
 using ChatApp.Interfaces.Repositories;
 using ChatApp.Persistence;
@@ -48,10 +49,12 @@ namespace ChatApp.API
                     options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 })
                .AddCookie(options =>
-                   {
-                       options.LoginPath = new PathString("/Account/google-login");
-                       options.Cookie.HttpOnly = true;
-                   }
+               {
+                   options.Cookie.Name = "UserCookieAuth";
+                   options.Cookie.MaxAge = TimeSpan.FromHours(1);
+                   options.LoginPath = new PathString("/Account/google-login");
+                   options.Cookie.HttpOnly = true;
+               }
                )
                .AddGoogle(options =>
                {
@@ -59,11 +62,14 @@ namespace ChatApp.API
                    options.ClientId = Configuration.GetSection("GoogleAuth:ClientId").Value;
                    options.ClientSecret = Configuration.GetSection("GoogleAuth:ClientSecret").Value;
                    options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
+                   options.SaveTokens = true;
                });
 
             services.AddMediatR(AppDomain.CurrentDomain.Load("ChatApp.CQRS"));
 
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddCors();
 
             services.AddSwaggerGen(options =>
             {
@@ -73,6 +79,8 @@ namespace ChatApp.API
                     Title = "Chat Api"
                 });
             });
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,6 +90,12 @@ namespace ChatApp.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(builder =>
+                builder.WithOrigins("http://localhost:4200")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials());
 
             app.UseRouting();
 
@@ -97,6 +111,8 @@ namespace ChatApp.API
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=home}/{action=index}/{id?}");
+
+                endpoints.MapHub<ChatHub>("/chat-hub");
             });
 
             app.UseSwagger();

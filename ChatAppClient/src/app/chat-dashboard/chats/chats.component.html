@@ -1,0 +1,9 @@
+<div class="conversation" *ngFor="let chat of allChats" (change)="onSelectChat(chat)">
+    <input [id]="chat.id" type="radio" name="chatRadioButton">
+    <label [for]="chat.id">
+        <img [src]="chat.pictureUrl" alt="ChatPicture">
+        <div class="title-text">{{chat.name}}</div>
+        <div class="created-date">{{chat.chatPrivacyString}}</div>
+        <div class="conversation-message">Last Chat Message</div>
+    </label>
+</div>
