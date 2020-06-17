@@ -1,16 +1,17 @@
-.conversation {
+.conversation label {
     display: grid;
     grid-template-columns: 40px 1fr max-content;
     grid-column-gap: 10px;
     color: #89A586;
     background: #121212;
     font-size: 1.0rem;
+    margin: 0px 0px 0px;
     border-bottom: 1px solid #649665 ;
     padding: 20px 20px 20px 15px;    
 }
 
-.conversation.active,
-.conversation:hover {
+.conversation label.active,
+.conversation label:hover {
     background: #649665 ;
 }
 
@@ -18,11 +19,19 @@
     cursor: pointer;
 }
 
-.conversation > img {
+.conversation label img {
     grid-row: span 2;
     height: 40px;
     width: 100%;
     border-radius: 100%;
+}
+
+.conversation input {
+    display: none;
+}
+
+.conversation input:checked + label {
+    background:  #426342;
 }
 
 .conversation-message {

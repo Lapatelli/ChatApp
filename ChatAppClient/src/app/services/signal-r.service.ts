@@ -32,6 +32,7 @@ export class SignalRService {
       .then(() => {
         console.log('Connection Started...');
         this.onSendMessage();
+        this.onAddToChat();
       })
       .catch(err => {
         console.log('Error while trying to connect: ' + err);
@@ -40,16 +41,22 @@ export class SignalRService {
       });
   }
 
-  testSubject() {
-    return this.testSubject$.asObservable();
+  public addToChat(chatId: string): void {
+      this.hubConnection.send('addToChat', chatId);
   }
 
-  public sendMessage(message: ChatMessage): void{
-    this.hubConnection.send('sendMessage', message);
-
+  public onAddToChat(): void {
+      this.hubConnection.on('OnAddToChat', (data: string) => {
+        console.log(data);
+      });
   }
+
+  public sendMessage(chatId: string, message: ChatMessage): void{
+    this.hubConnection.send('sendMessage', chatId, message);
+  }
+
   public onSendMessage() {
-    this.hubConnection.on('OnSendMessage', (data: ChatMessage) => {
+    this.hubConnection.on('onSendMessage', (data: ChatMessage) => {
       this.messagereceived.emit(data);
     });
   }

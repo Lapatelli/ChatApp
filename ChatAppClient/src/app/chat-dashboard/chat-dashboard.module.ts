@@ -16,6 +16,7 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UserService } from '../services/user.service';
 import { UserProfileContainerComponent } from './user-profile/user-profile-container.component';
 import { AuthService } from '../services/auth.service';
+import { MessageListComponent } from './message-list/message-list.component';
 
 
 @NgModule({
@@ -28,7 +29,8 @@ import { AuthService } from '../services/auth.service';
     UserProfileContainerComponent,
     CreateChatComponent,
     ChatProfileComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    MessageListComponent
   ],
   imports: [
     CommonModule,

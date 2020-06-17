@@ -78,14 +78,12 @@ namespace ChatApp.API.Controllers
         }
 
         [HttpGet("logout")]
-        public async Task<IActionResult> LogOut(string returnUrl = null)
+        public async Task<IActionResult> LogOut(string returnUrl = "~/")
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
-
             await _mediator.Send(new SetUserStatusCommand(HttpContext.User.FindFirstValue(ClaimTypes.Email), UserStatus.Offline));
 
             await HttpContext.SignOutAsync();
-            //HttpContext.Response.Cookies.Delete("UserCookieAuth");
+            HttpContext.Response.Cookies.Delete("UserCookieAuth");
 
             return Redirect("http://localhost:4200/auth");
         }

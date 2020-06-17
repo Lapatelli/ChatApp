@@ -30,14 +30,17 @@
             </div>
             <div class="users-container col-sm-12">
               <label>Users</label>
-              <div class="users-list" *ngFor="let user of allUsers">
-                <div>
-                  <img [src]="user.photoUrl" alt="UserPhoto">
-                </div>
-                <div>
-                  <div>{{user.lastName}} {{user.firstName}}</div>
-                  <div class="user-status-style">{{user.userStatusString}}</div>
-                </div>
+              <div class="users-list" *ngFor="let user of allUsers" (change)="onCheckUserInList(user.id)">
+                <input [id]="user.id" type="checkbox">
+                <label [for]="user.id">
+                  <div>
+                    <img [src]="user.photoUrl" alt="UserPhoto">
+                  </div>
+                  <div>
+                    <div>{{user.lastName}} {{user.firstName}}</div>
+                    <div class="user-status-style">{{user.userStatusString}}</div>
+                  </div>
+                </label>
               </div>
             </div>
             <div class="form-group col-sm-9">

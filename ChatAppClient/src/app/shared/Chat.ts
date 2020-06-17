@@ -1,4 +1,5 @@
 import { CHAT_PRIVACY } from './CHAT_PRIVACY';
+import { ChatMessage } from './Message';
 
 export class Chat {
     public id: string;
@@ -8,4 +9,5 @@ export class Chat {
     public chatPrivacyString: string;
     public picture: any;
     public pictureUrl: any;
+    public messageStorage: ChatMessage[];
 }

@@ -11,10 +11,12 @@
                 <h2 type="text" (click)='onToggleList(false)' >Users</h2>
             </div>
             <div [hidden]="!listToggler">
-                <app-chats (selectChat)="selectChat($event)"></app-chats>
+                <app-chats  (selectChat)="selectChat($event)"
+                            [allChats]="allChats">
+                </app-chats>
             </div>
             <div [hidden]="listToggler">
-                <app-users></app-users>
+                <app-users [allUsers]="allUsers"></app-users>
             </div>
         </div>
         <div id="new-message-container">
@@ -32,25 +34,15 @@
             </div>          
         </div>
         <div id="chat-message-list">
-            <div *ngFor="let message of chatMessageStorage">
-                <div *ngIf="message.email === userEmail; else showOtherMessage">
-                    <div class="message-row your-message">
-                        <div class="message-content">
-                            <div class="message-text">{{message.content}}</div>
-                            <div class="message-time">{{message.time}}</div>
-                        </div>
-                    </div>
-                </div>
-                <ng-template #showOtherMessage>
-                    <div class="message-row other-message">
-                        <div class="message-content">
-                            <img [src]="message.photo" alt="User">
-                            <div class="message-text">{{message.content}}</div>
-                            <div class="message-time">{{message.time}}</div>
-                        </div>
-                    </div>
-                </ng-template>
-            </div>
+            <app-message-list *ngIf="selectedChat; else showDefaultSignature"   
+                                [userEmail]="userEmail"
+                                [allUsers]="allUsers"
+                                [allChats]="allChats"
+                                [selectedChat]="selectedChat">
+            </app-message-list>
+            <ng-template #showDefaultSignature>
+                <span>Choose Conversation To Start Chatting ...</span>
+            </ng-template>
         </div>
         <form id="chat-form" (submit)="onSendMessage(inputMessage)">
             <input type="text" class="form-control" placeholder="type a message" [(ngModel)]="inputMessage" name="inputMessage">

@@ -25,10 +25,19 @@
     border-radius: 100%;
 }
 
-.user-message {
+.user-message-online {
     grid-column: span 2;
     padding-left: 5px;
-    color: rgb(187, 169, 169);
+    color: rgb(0, 255, 0);
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-message-offline {
+    grid-column: span 2;
+    padding-left: 5px;
+    color: gray;
     white-space: nowrap;
     overflow-x: hidden;
     text-overflow: ellipsis;
